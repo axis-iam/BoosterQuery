@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference — BoosterQuery</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <button class="menu-toggle" aria-label="Toggle menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a class="nav-brand" href="index.html"><span>Booster</span>Query</a>
+  <div class="nav-links">
+    <a href="index.html"><span class="en">Home</span><span class="zh">首页</span></a>
+    <a href="guide.html"><span class="en">Guide</span><span class="zh">指南</span></a>
+    <a href="api.html" class="active"><span class="en">API Reference</span><span class="zh">API 参考</span></a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="lang-toggle">中文</button>
+    <a class="github-link" href="https://github.com/axis-iam/BoosterQuery" target="_blank" rel="noopener" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<div class="doc-layout">
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-group">
+    <h4>repository</h4>
+    <a href="#booster-native-repository">BoosterNativeRepository</a>
+    <a href="#booster-query-repository">BoosterQueryRepository</a>
+  </div>
+  <div class="sidebar-group">
+    <h4>annotation</h4>
+    <a href="#booster-query-ann">@BoosterQuery</a>
+  </div>
+  <div class="sidebar-group">
+    <h4>config</h4>
+    <a href="#booster-query-config">BoosterQueryConfig</a>
+  </div>
+  <div class="sidebar-group">
+    <h4>support</h4>
+    <a href="#jpa-result-mapper">JpaResultMapper</a>
+    <a href="#parameter-binder">ParameterBinder</a>
+  </div>
+  <div class="sidebar-group">
+    <h4>rewrite</h4>
+    <a href="#booster-sql-rewriter">BoosterSqlRewriter</a>
+  </div>
+  <div class="sidebar-group">
+    <h4>cache</h4>
+    <a href="#booster-cache">BoosterCache</a>
+  </div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<main class="doc-content">
+<h1><span class="en">API Reference</span><span class="zh">API 参考</span></h1>
+<p>
+  <span class="en">Complete API documentation for all public interfaces and classes.</span>
+  <span class="zh">所有公共接口和类的完整 API 文档。</span>
+</p>
+<!-- BoosterNativeRepository -->
+<h2 id="booster-native-repository">BoosterNativeRepository&lt;T, ID&gt;</h2>
+<p>
+  <span class="en">Basic enhanced repository interface. Extends <code>JpaRepository&lt;T, ID&gt;</code>. Provides native SQL execution with parameter binding and result mapping.</span>
+  <span class="zh">基础增强仓库接口，继承 <code>JpaRepository&lt;T, ID&gt;</code>，提供原生 SQL 执行、参数绑定和结果映射。</span>
+</p>
+
+<h3><span class="en">Paged Queries</span><span class="zh">分页查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">Page</span>&lt;<span class="ty">T</span>&gt; <span class="fn">nativeQuery</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Pageable</span> pageable)</div>
+  <div class="method-desc"><span class="en">Execute paged query with Map parameters.</span><span class="zh">使用 Map 参数执行分页查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">Page</span>&lt;<span class="ty">T</span>&gt; <span class="fn">nativeQuery</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Pageable</span> pageable)</div>
+  <div class="method-desc"><span class="en">Execute paged query with POJO parameters.</span><span class="zh">使用 POJO 参数执行分页查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">Page</span>&lt;<span class="ty">T</span>&gt; <span class="fn">nativeQuery</span>(<span class="ty">String</span> sql, <span class="ty">Pageable</span> pageable)</div>
+  <div class="method-desc"><span class="en">Execute paged query without parameters.</span><span class="zh">无参数分页查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">Page</span>&lt;<span class="ty">R</span>&gt; <span class="fn">nativeQuery</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Pageable</span> pageable, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Execute paged query with Map parameters, mapping to custom result type.</span><span class="zh">使用 Map 参数执行分页查询，映射为自定义返回类型。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">Page</span>&lt;<span class="ty">R</span>&gt; <span class="fn">nativeQuery</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Pageable</span> pageable, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Execute paged query with POJO parameters, mapping to custom result type.</span><span class="zh">使用 POJO 参数执行分页查询，映射为自定义返回类型。</span></div>
+</div>
+
+<h3><span class="en">List Queries</span><span class="zh">列表查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">nativeQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Execute list query with Map parameters.</span><span class="zh">使用 Map 参数执行列表查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">nativeQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj)</div>
+  <div class="method-desc"><span class="en">Execute list query with POJO parameters.</span><span class="zh">使用 POJO 参数执行列表查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">nativeQueryList</span>(<span class="ty">String</span> sql)</div>
+  <div class="method-desc"><span class="en">Execute list query without parameters.</span><span class="zh">无参数列表查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">List</span>&lt;<span class="ty">R</span>&gt; <span class="fn">nativeQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Execute list query with Map parameters, mapping to custom result type.</span><span class="zh">使用 Map 参数执行列表查询，映射为自定义返回类型。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">List</span>&lt;<span class="ty">R</span>&gt; <span class="fn">nativeQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Execute list query with POJO parameters, mapping to custom result type.</span><span class="zh">使用 POJO 参数执行列表查询，映射为自定义返回类型。</span></div>
+</div>
+<h3><span class="en">Single-Object Queries</span><span class="zh">单条查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">T</span> <span class="fn">nativeQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Execute single-object query with Map parameters.</span><span class="zh">使用 Map 参数执行单条查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">T</span> <span class="fn">nativeQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj)</div>
+  <div class="method-desc"><span class="en">Execute single-object query with POJO parameters.</span><span class="zh">使用 POJO 参数执行单条查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">T</span> <span class="fn">nativeQueryOne</span>(<span class="ty">String</span> sql)</div>
+  <div class="method-desc"><span class="en">Execute single-object query without parameters.</span><span class="zh">无参数单条查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">R</span> <span class="fn">nativeQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Execute single-object query with Map parameters, mapping to custom result type.</span><span class="zh">使用 Map 参数执行单条查询，映射为自定义返回类型。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">R</span> <span class="fn">nativeQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Execute single-object query with POJO parameters, mapping to custom result type.</span><span class="zh">使用 POJO 参数执行单条查询，映射为自定义返回类型。</span></div>
+</div>
+
+<h3><span class="en">Count Queries</span><span class="zh">计数查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">nativeCount</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Execute count query with Map parameters.</span><span class="zh">使用 Map 参数执行计数查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">nativeCount</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj)</div>
+  <div class="method-desc"><span class="en">Execute count query with POJO parameters.</span><span class="zh">使用 POJO 参数执行计数查询。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">nativeCount</span>(<span class="ty">String</span> sql)</div>
+  <div class="method-desc"><span class="en">Execute count query without parameters.</span><span class="zh">无参数计数查询。</span></div>
+</div>
+
+<h3><span class="en">DML Operations</span><span class="zh">DML 操作</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">int</span> <span class="fn">nativeExecute</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params) <span class="badge badge-mod">@Modifying</span> <span class="badge badge-tx">@Transactional</span></div>
+  <div class="method-desc"><span class="en">Execute INSERT/UPDATE/DELETE with Map parameters. Returns affected row count.</span><span class="zh">使用 Map 参数执行 INSERT/UPDATE/DELETE，返回影响行数。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">int</span> <span class="fn">nativeExecute</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj) <span class="badge badge-mod">@Modifying</span> <span class="badge badge-tx">@Transactional</span></div>
+  <div class="method-desc"><span class="en">Execute DML with POJO parameters.</span><span class="zh">使用 POJO 参数执行 DML。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">int</span> <span class="fn">nativeExecute</span>(<span class="ty">String</span> sql) <span class="badge badge-mod">@Modifying</span> <span class="badge badge-tx">@Transactional</span></div>
+  <div class="method-desc"><span class="en">Execute DML without parameters.</span><span class="zh">无参数执行 DML。</span></div>
+</div>
+<!-- BoosterQueryRepository -->
+<h2 id="booster-query-repository">BoosterQueryRepository&lt;T, ID&gt;</h2>
+<p>
+  <span class="en">Enhanced repository. Extends <code>BoosterNativeRepository&lt;T, ID&gt;</code>. Adds SQL rewriting, auto-limit, and caching on top of basic features. All <code>booster*</code> methods mirror the <code>native*</code> methods with identical signatures.</span>
+  <span class="zh">增强仓库，继承 <code>BoosterNativeRepository&lt;T, ID&gt;</code>。在基础特性之上增加 SQL 改写、自动限制和缓存。所有 <code>booster*</code> 方法与 <code>native*</code> 方法签名一致。</span>
+</p>
+
+<h3><span class="en">Paged Queries</span><span class="zh">分页查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">Page</span>&lt;<span class="ty">T</span>&gt; <span class="fn">boosterQuery</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Pageable</span> pageable)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">Page</span>&lt;<span class="ty">T</span>&gt; <span class="fn">boosterQuery</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Pageable</span> pageable)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">Page</span>&lt;<span class="ty">T</span>&gt; <span class="fn">boosterQuery</span>(<span class="ty">String</span> sql, <span class="ty">Pageable</span> pageable)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">Page</span>&lt;<span class="ty">R</span>&gt; <span class="fn">boosterQuery</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Pageable</span> pageable, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">Page</span>&lt;<span class="ty">R</span>&gt; <span class="fn">boosterQuery</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Pageable</span> pageable, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+</div>
+
+<h3><span class="en">List Queries</span><span class="zh">列表查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">boosterQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">boosterQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">boosterQueryList</span>(<span class="ty">String</span> sql)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">List</span>&lt;<span class="ty">R</span>&gt; <span class="fn">boosterQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">List</span>&lt;<span class="ty">R</span>&gt; <span class="fn">boosterQueryList</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+</div>
+
+<h3><span class="en">Single-Object Queries</span><span class="zh">单条查询</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">T</span> <span class="fn">boosterQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">T</span> <span class="fn">boosterQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">T</span> <span class="fn">boosterQueryOne</span>(<span class="ty">String</span> sql)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">R</span> <span class="fn">boosterQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig">&lt;<span class="ty">R</span>&gt; <span class="ty">R</span> <span class="fn">boosterQueryOne</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj, <span class="ty">Class</span>&lt;<span class="ty">R</span>&gt; resultType)</div>
+</div>
+
+<h3><span class="en">Count &amp; DML</span><span class="zh">计数与 DML</span></h3>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">boosterCount</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">boosterCount</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">boosterCount</span>(<span class="ty">String</span> sql)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">int</span> <span class="fn">boosterExecute</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params) <span class="badge badge-mod">@Modifying</span> <span class="badge badge-tx">@Transactional</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">int</span> <span class="fn">boosterExecute</span>(<span class="ty">String</span> sql, <span class="ty">Object</span> paramObj) <span class="badge badge-mod">@Modifying</span> <span class="badge badge-tx">@Transactional</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">int</span> <span class="fn">boosterExecute</span>(<span class="ty">String</span> sql) <span class="badge badge-mod">@Modifying</span> <span class="badge badge-tx">@Transactional</span></div>
+</div>
+<!-- @BoosterQuery Annotation -->
+<h2 id="booster-query-ann">@BoosterQuery</h2>
+<p>
+  <span class="en">Declarative native SQL annotation for repository methods. Meta-annotated with <code>@Query(nativeQuery = true)</code>.</span>
+  <span class="zh">Repository 方法上的声明式原生 SQL 注解，元注解包含 <code>@Query(nativeQuery = true)</code>。</span>
+</p>
+<table>
+  <thead>
+    <tr>
+      <th><span class="en">Attribute</span><span class="zh">属性</span></th>
+      <th><span class="en">Type</span><span class="zh">类型</span></th>
+      <th><span class="en">Default</span><span class="zh">默认值</span></th>
+      <th><span class="en">Description</span><span class="zh">说明</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>value</code></td>
+      <td><code>String</code></td>
+      <td><span class="en">(required)</span><span class="zh">（必填）</span></td>
+      <td><span class="en">The native SQL query</span><span class="zh">原生 SQL 查询语句</span></td>
+    </tr>
+    <tr>
+      <td><code>countQuery</code></td>
+      <td><code>String</code></td>
+      <td><code>""</code></td>
+      <td><span class="en">Custom count SQL for pagination</span><span class="zh">分页用的自定义计数 SQL</span></td>
+    </tr>
+    <tr>
+      <td><code>enableRewrite</code></td>
+      <td><code>Toggle</code></td>
+      <td><code>INHERIT</code></td>
+      <td><span class="en">Override global SQL rewrite switch (TRUE / FALSE / INHERIT)</span><span class="zh">覆盖全局 SQL 改写开关</span></td>
+    </tr>
+    <tr>
+      <td><code>enableAutoLimit</code></td>
+      <td><code>Toggle</code></td>
+      <td><code>INHERIT</code></td>
+      <td><span class="en">Override global auto-limit switch</span><span class="zh">覆盖全局自动限制开关</span></td>
+    </tr>
+    <tr>
+      <td><code>autoLimit</code></td>
+      <td><code>long</code></td>
+      <td><code>-1</code></td>
+      <td><span class="en">Custom limit value (-1 = use global default)</span><span class="zh">自定义限制值（-1 表示使用全局默认）</span></td>
+    </tr>
+    <tr>
+      <td><code>resultType</code></td>
+      <td><code>Class&lt;?&gt;</code></td>
+      <td><code>void.class</code></td>
+      <td><span class="en">Explicit result mapping type</span><span class="zh">显式指定结果映射类型</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- BoosterQueryConfig -->
+<h2 id="booster-query-config">BoosterQueryConfig</h2>
+<p>
+  <span class="en">Runtime configuration for the SQL rewriter. Auto-configured from <code>booster.query.*</code> properties.</span>
+  <span class="zh">SQL 改写器的运行时配置，从 <code>booster.query.*</code> 属性自动配置。</span>
+</p>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">getDefaultLimit</span>() <span class="cm">// default: 10000</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">void</span> <span class="fn">setDefaultLimit</span>(<span class="kw">long</span> defaultLimit) <span class="cm">// throws IllegalArgumentException if &lt;= 0</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">boolean</span> <span class="fn">isEnableAutoLimit</span>() <span class="cm">// default: true</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">void</span> <span class="fn">setEnableAutoLimit</span>(<span class="kw">boolean</span> enableAutoLimit)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">boolean</span> <span class="fn">isEnableSqlRewrite</span>() <span class="cm">// default: true</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">void</span> <span class="fn">setEnableSqlRewrite</span>(<span class="kw">boolean</span> enableSqlRewrite)</div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">BoosterQueryConfig</span> <span class="fn">copy</span>()</div>
+  <div class="method-desc"><span class="en">Create a defensive copy of this configuration.</span><span class="zh">创建此配置的防御性副本。</span></div>
+</div>
+<!-- JpaResultMapper -->
+<h2 id="jpa-result-mapper">JpaResultMapper</h2>
+<p>
+  <span class="en">Utility class for mapping JPA Tuple results to typed objects. All methods are static.</span>
+  <span class="zh">将 JPA Tuple 结果映射为类型化对象的工具类，所有方法均为静态方法。</span>
+</p>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> &lt;<span class="ty">T</span>&gt; <span class="ty">List</span>&lt;<span class="ty">T</span>&gt; <span class="fn">map</span>(<span class="ty">List</span>&lt;<span class="ty">Tuple</span>&gt; tuples, <span class="ty">Class</span>&lt;<span class="ty">T</span>&gt; resultType)</div>
+  <div class="method-desc"><span class="en">Map a list of Tuples to a typed list.</span><span class="zh">将 Tuple 列表映射为类型化列表。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> &lt;<span class="ty">T</span>&gt; <span class="ty">T</span> <span class="fn">map</span>(<span class="ty">Tuple</span> tuple, <span class="ty">Class</span>&lt;<span class="ty">T</span>&gt; resultType)</div>
+  <div class="method-desc">
+    <span class="en">Map a single Tuple to a typed object. Dispatches to Map, Record, interface projection, DTO, or scalar conversion. Applies underscore-to-camelCase alias conversion.
+      <br><br><b>DTO mapping strategy:</b>
+      <ul>
+        <li>If the class has a no-arg constructor → BeanWrapper path (setter-based, existing behavior).</li>
+        <li>Otherwise → Constructor-based mapping: selects the constructor with the most parameters, resolves parameter names via <code>@ConstructorProperties</code> or <code>-parameters</code> reflection, matches Tuple aliases (with underscore-to-camelCase), applies type conversion, and uses primitive default values for null primitives.</li>
+      </ul>
+      This enables mapping to Kotlin data classes and immutable Java DTOs without a no-arg constructor.
+    </span>
+    <span class="zh">将单个 Tuple 映射为类型化对象。分发到 Map、Record、接口投影、DTO 或标量转换。自动应用下划线转驼峰别名转换。
+      <br><br><b>DTO 映射策略：</b>
+      <ul>
+        <li>有无参构造器 → BeanWrapper 路径（基于 setter，现有行为）。</li>
+        <li>无无参构造器 → 构造器推断映射：选择参数最多的构造器，通过 <code>@ConstructorProperties</code> 或 <code>-parameters</code> 反射解析参数名，匹配 Tuple 别名（含下划线转驼峰），自动类型转换，基本类型 null 安全。</li>
+      </ul>
+      支持 Kotlin data class 和无无参构造器的不可变 Java DTO 映射。
+    </span>
+  </div>
+</div>
+
+<!-- ParameterBinder -->
+<h2 id="parameter-binder">ParameterBinder</h2>
+<p>
+  <span class="en">Utility class for binding named parameters to JPA queries. All methods are static.</span>
+  <span class="zh">将命名参数绑定到 JPA 查询的工具类，所有方法均为静态方法。</span>
+</p>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static void</span> <span class="fn">bind</span>(<span class="ty">Query</span> query, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Bind Map parameters to a JPA Query. Only binds parameters that exist in the query — extra keys are safely ignored.</span><span class="zh">将 Map 参数绑定到 JPA Query。仅绑定查询中存在的参数，多余的键会被安全忽略。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static void</span> <span class="fn">bind</span>(<span class="ty">Query</span> query, <span class="ty">Object</span> paramObj)</div>
+  <div class="method-desc"><span class="en">Bind POJO fields as named parameters. If paramObj is a Map, delegates to the Map overload.</span><span class="zh">将 POJO 字段作为命名参数绑定。如果 paramObj 是 Map，则委托给 Map 重载。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; <span class="fn">toMap</span>(<span class="ty">Object</span> obj)</div>
+  <div class="method-desc"><span class="en">Convert a POJO to Map using cached reflection. Traverses superclass hierarchy, skips static/synthetic fields.</span><span class="zh">使用缓存反射将 POJO 转换为 Map。遍历父类层级，跳过 static/synthetic 字段。</span></div>
+</div>
+
+<!-- BoosterSqlRewriter -->
+<h2 id="booster-sql-rewriter">BoosterSqlRewriter</h2>
+<p>
+  <span class="en">Orchestrates SQL rewriting. Collects null/blank/empty parameters, removes dependent conditions via JSqlParser AST, and performs safety checks.</span>
+  <span class="zh">编排 SQL 改写流程。收集 null/空白/空集合参数，通过 JSqlParser AST 移除依赖条件，并执行安全检查。</span>
+</p>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> <span class="ty">SqlRewriteResult</span> <span class="fn">rewrite</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Rewrite SQL by removing conditions for null/blank/empty parameters. Returns rewritten SQL and filtered parameters.</span><span class="zh">通过移除 null/空白/空集合参数的条件来改写 SQL。返回改写后的 SQL 和过滤后的参数。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> <span class="ty">Set</span>&lt;<span class="ty">String</span>&gt; <span class="fn">collectNullParams</span>(<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Collect parameter names whose values are null, blank, or empty collections.</span><span class="zh">收集值为 null、空白或空集合的参数名。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; <span class="fn">filterParams</span>(<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params, <span class="ty">Set</span>&lt;<span class="ty">String</span>&gt; nullParams, <span class="ty">String</span> rewrittenSql)</div>
+  <div class="method-desc">
+    <span class="en">Filter out null parameters no longer referenced in the rewritten SQL. Parameters still referenced (e.g. in <code>:name IS NULL</code> patterns) are retained with their value normalized to <code>null</code>.</span>
+    <span class="zh">过滤掉重写后 SQL 中不再引用的空参数。仍被引用的参数（如 <code>:name IS NULL</code> 模式）保留，值归一化为 <code>null</code>。</span>
+  </div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">static</span> <span class="ty">Set</span>&lt;<span class="ty">String</span>&gt; <span class="fn">extractParamNames</span>(<span class="ty">String</span> sql)</div>
+  <div class="method-desc">
+    <span class="en">Extract all named parameter names from a SQL string. Supports underscore-prefixed names (e.g. <code>:_status</code>). Excludes PostgreSQL double-colon casts (<code>::type</code>).</span>
+    <span class="zh">从 SQL 字符串中提取所有命名参数名称。支持下划线开头的参数名（如 <code>:_status</code>），排除 PostgreSQL 双冒号类型转换（<code>::type</code>）。</span>
+  </div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">record</span> <span class="ty">SqlRewriteResult</span>(<span class="ty">String</span> sql, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params)</div>
+  <div class="method-desc"><span class="en">Result record containing rewritten SQL and filtered parameters.</span><span class="zh">包含改写后 SQL 和过滤后参数的结果记录。</span></div>
+</div>
+
+<!-- BoosterCache -->
+<h2 id="booster-cache">BoosterCache</h2>
+<p>
+  <span class="en">Cache interface for storing rewritten SQL. Default implementation uses Caffeine.</span>
+  <span class="zh">存储改写后 SQL 的缓存接口，默认实现使用 Caffeine。</span>
+</p>
+<div class="api-method">
+  <div class="method-sig"><span class="ty">String</span> <span class="fn">get</span>(<span class="ty">Object</span> key)</div>
+  <div class="method-desc"><span class="en">Get cached SQL by key. Returns null if not found.</span><span class="zh">根据 key 获取缓存的 SQL，未找到返回 null。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">void</span> <span class="fn">put</span>(<span class="ty">Object</span> key, <span class="ty">String</span> value)</div>
+  <div class="method-desc"><span class="en">Store SQL in cache.</span><span class="zh">将 SQL 存入缓存。</span></div>
+</div>
+<div class="api-method">
+  <div class="method-sig"><span class="kw">void</span> <span class="fn">clear</span>()</div>
+  <div class="method-desc"><span class="en">Clear all cached entries.</span><span class="zh">清除所有缓存条目。</span></div>
+</div>
+</main>
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>

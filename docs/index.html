@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BoosterQuery — Spring Data JPA Native SQL Enhancement</title>
+  <meta name="description" content="A lightweight Spring Data JPA library for native SQL execution, automatic SQL rewriting, and result mapping.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <button class="menu-toggle" aria-label="Toggle menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a class="nav-brand" href="index.html"><span>Booster</span>Query</a>
+  <div class="nav-links">
+    <a href="index.html" class="active">
+      <span class="en">Home</span><span class="zh">首页</span>
+    </a>
+    <a href="guide.html">
+      <span class="en">Guide</span><span class="zh">指南</span>
+    </a>
+    <a href="api.html">
+      <span class="en">API Reference</span><span class="zh">API 参考</span>
+    </a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="lang-toggle">中文</button>
+    <a class="github-link" href="https://github.com/axis-iam/BoosterQuery" target="_blank" rel="noopener" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1><span class="accent">Booster</span>Query</h1>
+  <p class="tagline">
+    <span class="en">A lightweight Spring Data JPA library for native SQL execution, automatic rewriting, and result mapping.</span>
+    <span class="zh">轻量级 Spring Data JPA 原生 SQL 增强库，提供智能改写与自动结果映射。</span>
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="guide.html">
+      <span class="en">Get Started</span><span class="zh">快速开始</span>
+    </a>
+    <a class="btn btn-outline" href="api.html">
+      <span class="en">API Reference</span><span class="zh">API 参考</span>
+    </a>
+  </div>
+  <div class="maven-coord">
+    <span>com.chaosguide:booster-query:1.0.0</span>
+    <button class="copy-btn" data-copy="com.chaosguide:booster-query:1.0.0" aria-label="Copy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <h2>
+    <span class="en">Core Features</span><span class="zh">核心特性</span>
+  </h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#9889;</div>
+      <h3>Native SQL Execution</h3>
+      <p>
+        <span class="en">Execute native SQL with unified API. Supports paged queries, list queries, single-object queries, count, and DML operations.</span>
+        <span class="zh">统一 API 执行原生 SQL，支持分页查询、列表查询、单条查询、计数和 DML 操作。</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#10024;</div>
+      <h3>SQL Rewriting</h3>
+      <p>
+        <span class="en">Automatically removes WHERE/HAVING/JOIN conditions when parameters are null, blank, or empty. AST-based rewriting via JSqlParser.</span>
+        <span class="zh">参数为 null、空白或空集合时自动移除 WHERE/HAVING/JOIN 条件，基于 JSqlParser AST 改写。</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128260;</div>
+      <h3>Result Mapping</h3>
+      <p>
+        <span class="en">Map Tuple results to Entity, DTO, Record, Map, or primitive types. Automatic underscore-to-camelCase alias conversion.</span>
+        <span class="zh">将 Tuple 结果映射为 Entity、DTO、Record、Map 或基础类型，自动下划线转驼峰。</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128737;</div>
+      <h3>Auto-Limit Protection</h3>
+      <p>
+        <span class="en">Prevents large result sets by automatically appending LIMIT to queries. Configurable default limit (10,000 rows).</span>
+        <span class="zh">自动为查询追加 LIMIT 防止大结果集，默认限制 10,000 行，可配置。</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#9889;</div>
+      <h3>Caffeine Caching</h3>
+      <p>
+        <span class="en">Cache rewritten SQL, count SQL, and sort SQL with Caffeine. Configurable size and TTL.</span>
+        <span class="zh">使用 Caffeine 缓存改写后的 SQL、计数 SQL 和排序 SQL，可配置大小和过期时间。</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128196;</div>
+      <h3>@BoosterQuery Annotation</h3>
+      <p>
+        <span class="en">Declarative SQL queries on repository methods. Supports per-method rewrite/limit overrides and custom result types.</span>
+        <span class="zh">在 Repository 方法上声明式定义 SQL 查询，支持逐方法覆盖改写/限制配置和自定义返回类型。</span>
+      </p>
+    </div>
+  </div>
+</section>
+<!-- Quick Start -->
+<section class="quickstart">
+  <div class="quickstart-inner">
+    <h2>
+      <span class="en">Quick Start</span><span class="zh">快速开始</span>
+    </h2>
+    <p class="subtitle">
+      <span class="en">Get up and running in 3 steps</span>
+      <span class="zh">3 步快速上手</span>
+    </p>
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">1</span>
+        <h3><span class="en">Add Dependency</span><span class="zh">添加依赖</span></h3>
+      </div>
+      <div class="tab-group">
+        <button class="tab-btn active" data-tab="gradle">Gradle</button>
+        <button class="tab-btn" data-tab="maven">Maven</button>
+      </div>
+      <div class="tab-content active" data-tab="gradle">
+<pre><span class="fn">implementation</span>(<span class="str">"com.chaosguide:booster-query:1.0.0"</span>)</pre>
+      </div>
+      <div class="tab-content" data-tab="maven">
+<pre><span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span><span class="str">com.chaosguide</span><span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span><span class="str">booster-query</span><span class="kw">&lt;/artifactId&gt;</span>
+    <span class="kw">&lt;version&gt;</span><span class="str">1.0.0</span><span class="kw">&lt;/version&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></pre>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">2</span>
+        <h3><span class="en">Enable BoosterQuery</span><span class="zh">启用 BoosterQuery</span></h3>
+      </div>
+<pre><span class="an">@SpringBootApplication</span>
+<span class="an">@EnableJpaRepositories</span>(repositoryFactoryBeanClass = <span class="ty">BoosterQueryRepositoryFactoryBean</span>.<span class="kw">class</span>)
+<span class="kw">public class</span> <span class="ty">MyApplication</span> { }</pre>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-header">
+        <span class="step-num">3</span>
+        <h3><span class="en">Use Enhanced Queries</span><span class="zh">使用增强查询</span></h3>
+      </div>
+<pre><span class="kw">public interface</span> <span class="ty">UserRepository</span> <span class="kw">extends</span> <span class="ty">BoosterQueryRepository</span>&lt;<span class="ty">User</span>, <span class="ty">Long</span>&gt; { }
+
+<span class="cm">// Null parameters are automatically removed from WHERE clause</span>
+<span class="ty">String</span> sql = <span class="str">"SELECT * FROM t_user WHERE name = :name AND age > :age"</span>;
+<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params = <span class="kw">new</span> <span class="ty">HashMap</span>&lt;&gt;();
+params.<span class="fn">put</span>(<span class="str">"name"</span>, <span class="str">"Alice"</span>);
+params.<span class="fn">put</span>(<span class="str">"age"</span>, <span class="kw">null</span>);  <span class="cm">// null → condition removed</span>
+<span class="ty">List</span>&lt;<span class="ty">User</span>&gt; users = userRepo.<span class="fn">boosterQueryList</span>(sql, params);
+<span class="cm">// → SQL becomes: SELECT * FROM t_user WHERE name = :name</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>Released under the <a href="https://opensource.org/licenses/Apache-2.0">Apache 2.0 License</a>.</p>
+  <p style="margin-top:8px">Copyright &copy; 2025 <a href="https://github.com/chaosguide">ChaosGuide</a></p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
