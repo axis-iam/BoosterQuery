@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide — BoosterQuery</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <button class="menu-toggle" aria-label="Toggle menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a class="nav-brand" href="index.html"><span>Booster</span>Query</a>
+  <div class="nav-links">
+    <a href="index.html"><span class="en">Home</span><span class="zh">首页</span></a>
+    <a href="guide.html" class="active"><span class="en">Guide</span><span class="zh">指南</span></a>
+    <a href="api.html"><span class="en">API Reference</span><span class="zh">API 参考</span></a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" aria-label="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="lang-toggle">中文</button>
+    <a class="github-link" href="https://github.com/axis-iam/BoosterQuery" target="_blank" rel="noopener" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<div class="doc-layout">
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-group">
+    <h4><span class="en">Getting Started</span><span class="zh">入门</span></h4>
+    <a href="#installation"><span class="en">Installation</span><span class="zh">安装</span></a>
+    <a href="#quick-start"><span class="en">Quick Start</span><span class="zh">快速开始</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h4><span class="en">Core Concepts</span><span class="zh">核心概念</span></h4>
+    <a href="#repository-system"><span class="en">Repository System</span><span class="zh">仓库体系</span></a>
+    <a href="#parameter-binding"><span class="en">Parameter Binding</span><span class="zh">参数绑定</span></a>
+    <a href="#result-mapping"><span class="en">Result Mapping</span><span class="zh">结果映射</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h4><span class="en">Enhanced Features</span><span class="zh">增强特性</span></h4>
+    <a href="#sql-rewriting"><span class="en">SQL Rewriting</span><span class="zh">SQL 改写</span></a>
+    <a href="#auto-limit"><span class="en">Auto-Limit</span><span class="zh">自动限制</span></a>
+    <a href="#caching"><span class="en">Caching</span><span class="zh">缓存</span></a>
+  </div>
+  <div class="sidebar-group">
+    <h4><span class="en">Advanced</span><span class="zh">进阶</span></h4>
+    <a href="#booster-query-annotation"><span class="en">@BoosterQuery</span><span class="zh">@BoosterQuery 注解</span></a>
+    <a href="#supported-return-types"><span class="en">Return Types</span><span class="zh">返回类型</span></a>
+    <a href="#configuration"><span class="en">Configuration</span><span class="zh">配置参考</span></a>
+  </div>
+</aside>
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="doc-content">
+<h1>
+  <span class="en">Guide</span><span class="zh">使用指南</span>
+</h1>
+<p>
+  <span class="en">Learn how to use BoosterQuery to enhance your Spring Data JPA native SQL experience.</span>
+  <span class="zh">了解如何使用 BoosterQuery 增强 Spring Data JPA 原生 SQL 开发体验。</span>
+</p>
+
+<!-- Installation -->
+<h2 id="installation">
+  <span class="en">Installation</span><span class="zh">安装</span>
+</h2>
+<p>
+  <span class="en">BoosterQuery requires Java 21+ and Spring Boot 4.0+.</span>
+  <span class="zh">BoosterQuery 需要 Java 21+ 和 Spring Boot 4.0+。</span>
+</p>
+<div>
+  <div class="tab-group">
+    <button class="tab-btn active" data-tab="gradle-dep">Gradle (Kotlin DSL)</button>
+    <button class="tab-btn" data-tab="maven-dep">Maven</button>
+  </div>
+  <div class="tab-content active" data-tab="gradle-dep">
+<pre><span class="fn">implementation</span>(<span class="str">"com.chaosguide:booster-query:1.0.0"</span>)</pre>
+  </div>
+  <div class="tab-content" data-tab="maven-dep">
+<pre><span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span><span class="str">com.chaosguide</span><span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span><span class="str">booster-query</span><span class="kw">&lt;/artifactId&gt;</span>
+    <span class="kw">&lt;version&gt;</span><span class="str">1.0.0</span><span class="kw">&lt;/version&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></pre>
+  </div>
+</div>
+
+<!-- Quick Start -->
+<h2 id="quick-start">
+  <span class="en">Quick Start</span><span class="zh">快速开始</span>
+</h2>
+<p>
+  <span class="en">Enable BoosterQuery by setting the repository factory bean class:</span>
+  <span class="zh">通过设置 Repository 工厂 Bean 类启用 BoosterQuery：</span>
+</p>
+<pre><span class="an">@SpringBootApplication</span>
+<span class="an">@EnableJpaRepositories</span>(repositoryFactoryBeanClass = <span class="ty">BoosterQueryRepositoryFactoryBean</span>.<span class="kw">class</span>)
+<span class="kw">public class</span> <span class="ty">MyApplication</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(<span class="ty">String</span>[] args) {
+        <span class="ty">SpringApplication</span>.<span class="fn">run</span>(<span class="ty">MyApplication</span>.<span class="kw">class</span>, args);
+    }
+}</pre>
+<p>
+  <span class="en">Define your repository by extending <code>BoosterQueryRepository</code>:</span>
+  <span class="zh">定义 Repository，继承 <code>BoosterQueryRepository</code>：</span>
+</p>
+<pre><span class="kw">public interface</span> <span class="ty">UserRepository</span> <span class="kw">extends</span> <span class="ty">BoosterQueryRepository</span>&lt;<span class="ty">User</span>, <span class="ty">Long</span>&gt; { }
+</pre>
+<p>
+  <span class="en">Now you can execute native SQL with enhanced features:</span>
+  <span class="zh">现在可以使用智能特性执行原生 SQL：</span>
+</p>
+<pre><span class="an">@Service</span>
+<span class="kw">public class</span> <span class="ty">UserService</span> {
+    <span class="kw">private final</span> <span class="ty">UserRepository</span> repo;
+
+    <span class="kw">public</span> <span class="ty">List</span>&lt;<span class="ty">User</span>&gt; <span class="fn">search</span>(<span class="ty">String</span> name, <span class="ty">Integer</span> age) {
+        <span class="ty">String</span> sql = <span class="str">"SELECT * FROM t_user WHERE name LIKE :name AND age > :age"</span>;
+        <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params = <span class="kw">new</span> <span class="ty">HashMap</span>&lt;&gt;();
+        params.<span class="fn">put</span>(<span class="str">"name"</span>, name);  <span class="cm">// null → condition removed automatically</span>
+        params.<span class="fn">put</span>(<span class="str">"age"</span>, age);    <span class="cm">// null → condition removed automatically</span>
+        <span class="kw">return</span> repo.<span class="fn">boosterQueryList</span>(sql, params);
+    }
+}</pre>
+<!-- Repository System -->
+<h2 id="repository-system">
+  <span class="en">Repository System</span><span class="zh">仓库体系</span>
+</h2>
+<p>
+  <span class="en">BoosterQuery provides a two-tier repository system:</span>
+  <span class="zh">BoosterQuery 提供两层仓库体系：</span>
+</p>
+<table>
+  <thead>
+    <tr>
+      <th><span class="en">Interface</span><span class="zh">接口</span></th>
+      <th><span class="en">Methods Prefix</span><span class="zh">方法前缀</span></th>
+      <th><span class="en">Features</span><span class="zh">特性</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>BoosterNativeRepository</code></td>
+      <td><code>native*</code></td>
+      <td><span class="en">Basic native SQL execution + result mapping</span><span class="zh">基础原生 SQL 执行 + 结果映射</span></td>
+    </tr>
+    <tr>
+      <td><code>BoosterQueryRepository</code></td>
+      <td><code>booster*</code></td>
+      <td><span class="en">All basic features + SQL rewriting + auto-limit + caching</span><span class="zh">全部基础特性 + SQL 改写 + 自动限制 + 缓存</span></td>
+    </tr>
+  </tbody>
+</table>
+<div class="tip">
+  <strong>Tip</strong>
+  <span class="en"><code>BoosterQueryRepository</code> extends <code>BoosterNativeRepository</code>, which extends <code>JpaRepository</code>. You get all standard Spring Data JPA methods plus the enhanced ones.</span>
+  <span class="zh"><code>BoosterQueryRepository</code> 继承 <code>BoosterNativeRepository</code>，后者继承 <code>JpaRepository</code>。你可以同时使用所有标准 Spring Data JPA 方法和增强方法。</span>
+</div>
+
+<!-- Parameter Binding -->
+<h2 id="parameter-binding">
+  <span class="en">Parameter Binding</span><span class="zh">参数绑定</span>
+</h2>
+<p>
+  <span class="en">BoosterQuery supports three parameter binding styles:</span>
+  <span class="zh">BoosterQuery 支持三种参数绑定方式：</span>
+</p>
+<h3><span class="en">1. Map Parameters</span><span class="zh">1. Map 参数</span></h3>
+<pre><span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Object</span>&gt; params = <span class="ty">Map</span>.<span class="fn">of</span>(<span class="str">"name"</span>, <span class="str">"Alice"</span>, <span class="str">"age"</span>, <span class="num">18</span>);
+repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t_user WHERE name = :name AND age > :age"</span>, params);</pre>
+
+<h3><span class="en">2. POJO Parameters</span><span class="zh">2. POJO 参数</span></h3>
+<pre><span class="kw">record</span> <span class="ty">UserQuery</span>(<span class="ty">String</span> name, <span class="ty">Integer</span> age) {}
+repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t_user WHERE name = :name AND age > :age"</span>, <span class="kw">new</span> <span class="ty">UserQuery</span>(<span class="str">"Alice"</span>, <span class="num">18</span>));</pre>
+
+<h3><span class="en">3. No Parameters</span><span class="zh">3. 无参数</span></h3>
+<pre>repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t_user ORDER BY id"</span>);</pre>
+<div class="tip">
+  <strong>Tip</strong>
+  <span class="en">POJO binding uses reflection to extract fields. It supports inheritance and works with Java records. Only parameters that exist in the SQL are bound — extra fields are safely ignored.</span>
+  <span class="zh">POJO 绑定通过反射提取字段，支持继承和 Java record。只有 SQL 中存在的参数才会被绑定，多余字段会被安全忽略。</span>
+</div>
+
+<h3><span class="en">4. @BoosterQuery Annotation Parameters</span><span class="zh">4. @BoosterQuery 注解参数</span></h3>
+<p>
+  <span class="en">For <code>@BoosterQuery</code> annotated methods, parameter names are resolved in priority order:</span>
+  <span class="zh">对于 <code>@BoosterQuery</code> 注解方法，参数名按以下优先级解析：</span>
+</p>
+<ol>
+  <li><span class="en"><code>@Param</code> annotation — explicit, always works</span><span class="zh"><code>@Param</code> 注解 — 显式声明，始终生效</span></li>
+  <li><span class="en"><code>-parameters</code> compiler flag — infers names via reflection (Spring Boot default)</span><span class="zh"><code>-parameters</code> 编译选项 — 通过反射推断（Spring Boot 默认开启）</span></li>
+  <li><span class="en">Single POJO/Map — extracts fields by name automatically</span><span class="zh">单个 POJO/Map — 自动按字段名提取</span></li>
+</ol>
+<pre><span class="cm">// @Param can be omitted when -parameters is enabled (Spring Boot default)</span>
+<span class="at">@BoosterQuery</span>(<span class="str">"SELECT * FROM t_user WHERE name = :name AND age &gt; :age"</span>)
+<span class="ty">List</span>&lt;<span class="ty">User</span>&gt; <span class="fn">findByConditions</span>(<span class="ty">String</span> name, <span class="ty">Integer</span> age);
+
+<span class="cm">// @Param is still supported and takes priority</span>
+<span class="at">@BoosterQuery</span>(<span class="str">"SELECT * FROM t_user WHERE user_name = :userName"</span>)
+<span class="ty">List</span>&lt;<span class="ty">User</span>&gt; <span class="fn">findByName</span>(<span class="at">@Param</span>(<span class="str">"userName"</span>) <span class="ty">String</span> name);</pre>
+<div class="tip">
+  <strong>Note</strong>
+  <span class="en">For non-Spring-Boot projects, add <code>-parameters</code> to your compiler options. In Gradle: <code>options.compilerArgs.add("-parameters")</code></span>
+  <span class="zh">非 Spring Boot 项目需手动添加 <code>-parameters</code> 编译选项。Gradle: <code>options.compilerArgs.add("-parameters")</code></span>
+</div>
+<!-- Result Mapping -->
+<h2 id="result-mapping">
+  <span class="en">Result Mapping</span><span class="zh">结果映射</span>
+</h2>
+<p>
+  <span class="en">BoosterQuery automatically maps JPA Tuple results to your target type. Underscore column names are converted to camelCase.</span>
+  <span class="zh">BoosterQuery 自动将 JPA Tuple 结果映射为目标类型，下划线列名自动转换为驼峰命名。</span>
+</p>
+<p>
+  <span class="en">Supported mapping targets: Entity, DTO (POJO with setters), Record, Interface Projection (via dynamic proxy), Map, and scalar types.</span>
+  <span class="zh">支持的映射目标：Entity、DTO（含 setter 的 POJO）、Record、接口投影（动态代理）、Map 和标量类型。</span>
+</p>
+
+<h3><span class="en">Entity Mapping (default)</span><span class="zh">Entity 映射（默认）</span></h3>
+<pre><span class="ty">List</span>&lt;<span class="ty">User</span>&gt; users = repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t_user"</span>);</pre>
+
+<h3><span class="en">DTO / Record Mapping</span><span class="zh">DTO / Record 映射</span></h3>
+<pre><span class="kw">record</span> <span class="ty">UserDTO</span>(<span class="ty">String</span> userName, <span class="ty">Integer</span> age) {}
+<span class="cm">// Column user_name → field userName (auto camelCase)</span>
+<span class="ty">List</span>&lt;<span class="ty">UserDTO</span>&gt; dtos = repo.<span class="fn">boosterQueryList</span>(
+    <span class="str">"SELECT user_name, age FROM t_user"</span>, params, <span class="ty">UserDTO</span>.<span class="kw">class</span>);</pre>
+
+<h3><span class="en">Interface Projection</span><span class="zh">接口投影</span></h3>
+<p>
+  <span class="en">Define a getter-only interface and use it as a result type. BoosterQuery creates a dynamic proxy that maps Tuple columns to getter methods (following JavaBean naming conventions).</span>
+  <span class="zh">定义只含 getter 的接口作为结果类型。BoosterQuery 通过动态代理将 Tuple 列映射到 getter 方法（遵循 JavaBean 命名规范）。</span>
+</p>
+<pre><span class="kw">public interface</span> <span class="ty">UserProjection</span> {
+    <span class="ty">String</span> <span class="fn">getName</span>();
+    <span class="ty">String</span> <span class="fn">getEmail</span>();
+    <span class="cm">// default methods are supported</span>
+    <span class="kw">default</span> <span class="ty">String</span> <span class="fn">getDisplayName</span>() { <span class="kw">return</span> <span class="fn">getName</span>() + <span class="str">" &lt;"</span> + <span class="fn">getEmail</span>() + <span class="str">"&gt;"</span>; }
+}
+
+<span class="cm">// Column user_name → getter getUserName (auto camelCase)</span>
+<span class="ty">List</span>&lt;<span class="ty">UserProjection</span>&gt; projections = repo.<span class="fn">boosterQueryList</span>(
+    <span class="str">"SELECT user_name AS name, email FROM t_user"</span>, params, <span class="ty">UserProjection</span>.<span class="kw">class</span>);</pre>
+<div class="tip">
+  <strong>Tip</strong>
+  <span class="en">For new code, prefer <code>Record</code> over interface projection — records are immutable, have no proxy overhead, and provide correct <code>equals</code>/<code>hashCode</code>/<code>toString</code> out of the box.</span>
+  <span class="zh">对于新代码，推荐使用 <code>Record</code> 而非接口投影 — Record 不可变、无代理开销，且自动提供正确的 <code>equals</code>/<code>hashCode</code>/<code>toString</code>。</span>
+</div>
+
+<h3><span class="en">Map Mapping</span><span class="zh">Map 映射</span></h3>
+<pre><span class="ty">List</span>&lt;<span class="ty">Map</span>&gt; maps = repo.<span class="fn">boosterQueryList</span>(
+    <span class="str">"SELECT user_name, age FROM t_user"</span>, params, <span class="ty">Map</span>.<span class="kw">class</span>);</pre>
+
+<h3><span class="en">Scalar / Primitive Mapping</span><span class="zh">标量 / 基础类型映射</span></h3>
+<pre><span class="ty">List</span>&lt;<span class="ty">String</span>&gt; names = repo.<span class="fn">boosterQueryList</span>(
+    <span class="str">"SELECT user_name FROM t_user"</span>, params, <span class="ty">String</span>.<span class="kw">class</span>);
+
+<span class="ty">Long</span> count = repo.<span class="fn">boosterCount</span>(<span class="str">"SELECT * FROM t_user"</span>);</pre>
+
+<p>
+  <span class="en">Supported scalar types: <code>String</code>, <code>Long</code>, <code>Integer</code>, <code>Double</code>, <code>Float</code>, <code>Short</code>, <code>Byte</code>, <code>BigDecimal</code>, <code>BigInteger</code>, <code>Boolean</code>, <code>Date</code>, <code>LocalDateTime</code>, <code>LocalDate</code>, <code>LocalTime</code>, <code>Timestamp</code>.</span>
+  <span class="zh">支持的标量类型：<code>String</code>、<code>Long</code>、<code>Integer</code>、<code>Double</code>、<code>Float</code>、<code>Short</code>、<code>Byte</code>、<code>BigDecimal</code>、<code>BigInteger</code>、<code>Boolean</code>、<code>Date</code>、<code>LocalDateTime</code>、<code>LocalDate</code>、<code>LocalTime</code>、<code>Timestamp</code>。</span>
+</p>
+
+<!-- SQL Rewriting -->
+<h2 id="sql-rewriting">
+  <span class="en">SQL Rewriting</span><span class="zh">SQL 改写</span>
+</h2>
+<p>
+  <span class="en">The SQL rewriter automatically removes conditions from WHERE, HAVING, and JOIN ON clauses when the bound parameter is <code>null</code>, an empty string <code>""</code>, a blank string, or an empty collection.</span>
+  <span class="zh">智能 SQL 改写器在绑定参数为 <code>null</code>、空字符串 <code>""</code>、空白字符串或空集合时，自动移除 WHERE、HAVING 和 JOIN ON 子句中的对应条件。</span>
+</p>
+<pre><span class="cm">// Original SQL</span>
+<span class="str">"SELECT * FROM t_user WHERE name = :name AND age > :age AND status IN :statuses"</span>
+
+<span class="cm">// Parameters: {name: "Alice", age: null, statuses: []}</span>
+<span class="cm">// Rewritten:  SELECT * FROM t_user WHERE name = :name</span></pre>
+
+<h3><span class="en">Structural Expressions</span><span class="zh">结构性表达式</span></h3>
+<p>
+  <span class="en">Some SQL patterns intentionally reference parameters in non-filterable contexts, such as <code>:name IS NULL</code> for optional-condition logic or parameters inside <code>CASE WHEN</code> expressions. These are <strong>not removed</strong> by the rewriter, and the parameters are retained with their value normalized to <code>null</code>.</span>
+  <span class="zh">某些 SQL 模式会在不可过滤的上下文中引用参数，例如 <code>:name IS NULL</code> 用于可选条件逻辑，或 <code>CASE WHEN</code> 表达式中的参数。改写器<strong>不会移除</strong>这些表达式，参数会被保留且值归一化为 <code>null</code>。</span>
+</p>
+<pre><span class="cm">// Optional-condition pattern: never removed by rewriter</span>
+<span class="str">"SELECT * FROM t_user WHERE (:name IS NULL OR name = :name)"</span>
+
+<span class="cm">// When name=null → :name IS NULL evaluates to true → returns all rows</span>
+<span class="cm">// When name="Alice" → name = :name filters normally</span></pre>
+<div class="tip">
+  <strong>Tip</strong>
+  <span class="en">Blank strings (<code>""</code>, <code>"  "</code>) and empty collections are treated as "null" by the rewriter. When these values appear in structural expressions, they are normalized to actual <code>null</code> to ensure <code>:p IS NULL</code> evaluates correctly.</span>
+  <span class="zh">空字符串（<code>""</code>、<code>"  "</code>）和空集合被改写器视为"null"。当这些值出现在结构性表达式中时，会被归一化为实际的 <code>null</code>，确保 <code>:p IS NULL</code> 求值正确。</span>
+</div>
+
+<div class="warning">
+  <strong><span class="en">Safety Check</span><span class="zh">安全拦截</span></strong>
+  <span class="en">For UPDATE and DELETE statements, if all WHERE conditions are removed (all parameters null), BoosterQuery throws <code>SqlRewriteException</code> to prevent accidental full-table modifications.</span>
+  <span class="zh">对于 UPDATE 和 DELETE 语句，如果所有 WHERE 条件都被移除（所有参数为 null），BoosterQuery 会抛出 <code>SqlRewriteException</code> 以防止意外的全表修改。</span>
+</div>
+<!-- Auto-Limit -->
+<h2 id="auto-limit">
+  <span class="en">Auto-Limit</span><span class="zh">自动限制</span>
+</h2>
+<p>
+  <span class="en">Enhanced queries automatically apply <code>setMaxResults</code> to prevent accidentally fetching huge result sets. The default limit is 10,000 rows.</span>
+  <span class="zh">智能查询自动应用 <code>setMaxResults</code> 防止意外获取超大结果集，默认限制 10,000 行。</span>
+</p>
+<pre><span class="cm">// application.yml</span>
+<span class="param">booster</span>:
+  <span class="param">query</span>:
+    <span class="param">default-limit</span>: <span class="num">5000</span>        <span class="cm"># Change default limit</span>
+    <span class="param">enable-auto-limit</span>: <span class="kw">true</span>   <span class="cm"># Enable/disable globally</span></pre>
+<div class="tip">
+  <strong>Tip</strong>
+  <span class="en">Auto-limit only applies to <code>booster*</code> methods. The <code>native*</code> methods do not apply auto-limit. You can also override per-method via <code>@BoosterQuery(enableAutoLimit = TRUE, autoLimit = 100)</code>.</span>
+  <span class="zh">自动限制仅适用于 <code>booster*</code> 方法，<code>native*</code> 方法不会自动限制。也可以通过 <code>@BoosterQuery(enableAutoLimit = TRUE, autoLimit = 100)</code> 逐方法覆盖。</span>
+</div>
+
+<!-- Caching -->
+<h2 id="caching">
+  <span class="en">Caching</span><span class="zh">缓存</span>
+</h2>
+<p>
+  <span class="en">BoosterQuery can cache rewritten SQL, count SQL, and sort SQL using Caffeine. Caching is disabled by default.</span>
+  <span class="zh">BoosterQuery 可以使用 Caffeine 缓存改写后的 SQL、计数 SQL 和排序 SQL。缓存默认关闭。</span>
+</p>
+<pre><span class="cm">// application.yml</span>
+<span class="param">booster</span>:
+  <span class="param">query</span>:
+    <span class="param">cache</span>:
+      <span class="param">enabled</span>: <span class="kw">true</span>
+      <span class="param">maximum-size</span>: <span class="num">1000</span>          <span class="cm"># Max cached entries</span>
+      <span class="param">expire-after-write</span>: <span class="num">3600000</span> <span class="cm"># TTL in ms (default: 60 min)</span></pre>
+
+<!-- @BoosterQuery Annotation -->
+<h2 id="booster-query-annotation">
+  <span class="en">@BoosterQuery Annotation</span><span class="zh">@BoosterQuery 注解</span>
+</h2>
+<p>
+  <span class="en">Use <code>@BoosterQuery</code> for declarative SQL queries on repository methods, similar to Spring Data's <code>@Query</code> but with enhanced features.</span>
+  <span class="zh">使用 <code>@BoosterQuery</code> 在 Repository 方法上声明式定义 SQL 查询，类似 Spring Data 的 <code>@Query</code> 但具备增强特性。</span>
+</p>
+<pre><span class="kw">public interface</span> <span class="ty">UserRepository</span> <span class="kw">extends</span> <span class="ty">BoosterQueryRepository</span>&lt;<span class="ty">User</span>, <span class="ty">Long</span>&gt; {
+
+    <span class="an">@BoosterQuery</span>(<span class="str">"SELECT * FROM t_user WHERE name LIKE :name AND age > :age"</span>)
+    <span class="ty">List</span>&lt;<span class="ty">User</span>&gt; <span class="fn">findByConditions</span>(<span class="an">@Param</span>(<span class="str">"name"</span>) <span class="ty">String</span> name, <span class="an">@Param</span>(<span class="str">"age"</span>) <span class="ty">Integer</span> age);
+
+    <span class="an">@BoosterQuery</span>(
+        value = <span class="str">"SELECT user_name, email FROM t_user WHERE status = :status"</span>,
+        resultType = <span class="ty">UserDTO</span>.<span class="kw">class</span>,
+        enableRewrite = <span class="ty">Toggle</span>.TRUE,
+        enableAutoLimit = <span class="ty">Toggle</span>.TRUE,
+        autoLimit = <span class="num">500</span>
+    )
+    <span class="ty">List</span>&lt;<span class="ty">UserDTO</span>&gt; <span class="fn">findActiveUsers</span>(<span class="an">@Param</span>(<span class="str">"status"</span>) <span class="ty">String</span> status);
+
+    <span class="an">@BoosterQuery</span>(
+        value = <span class="str">"SELECT * FROM t_user WHERE dept_id = :deptId"</span>,
+        countQuery = <span class="str">"SELECT COUNT(*) FROM t_user WHERE dept_id = :deptId"</span>
+    )
+    <span class="ty">Page</span>&lt;<span class="ty">User</span>&gt; <span class="fn">findByDept</span>(<span class="an">@Param</span>(<span class="str">"deptId"</span>) <span class="ty">Long</span> deptId, <span class="ty">Pageable</span> pageable);
+}</pre>
+
+<h3 id="supported-return-types">
+  <span class="en">Supported Return Types</span><span class="zh">支持的返回类型</span>
+</h3>
+<p>
+  <span class="en"><code>@BoosterQuery</code> automatically infers the result mapping type from the method's return type:</span>
+  <span class="zh"><code>@BoosterQuery</code> 根据方法返回类型自动推断结果映射类型：</span>
+</p>
+<table>
+  <thead>
+    <tr>
+      <th><span class="en">Return Type</span><span class="zh">返回类型</span></th>
+      <th><span class="en">Behavior</span><span class="zh">行为</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>List&lt;T&gt;</code></td>
+      <td><span class="en">Query list, maps each row to <code>T</code></span><span class="zh">列表查询，每行映射为 <code>T</code></span></td>
+    </tr>
+    <tr>
+      <td><code>Page&lt;T&gt;</code></td>
+      <td><span class="en">Paginated query (requires <code>Pageable</code> parameter)</span><span class="zh">分页查询（需要 <code>Pageable</code> 参数）</span></td>
+    </tr>
+    <tr>
+      <td><code>Optional&lt;T&gt;</code></td>
+      <td><span class="en">Single result wrapped in Optional</span><span class="zh">单条结果包装为 Optional</span></td>
+    </tr>
+    <tr>
+      <td><code>T</code> (DTO / Record / Interface / Entity)</td>
+      <td><span class="en">Direct single-result mapping</span><span class="zh">直接单条结果映射</span></td>
+    </tr>
+    <tr>
+      <td><code>Map&lt;String, Object&gt;</code></td>
+      <td><span class="en">Single row as key-value map</span><span class="zh">单行作为键值 Map</span></td>
+    </tr>
+    <tr>
+      <td><code>String</code>, <code>BigDecimal</code>, etc.</td>
+      <td><span class="en">Scalar value extraction</span><span class="zh">标量值提取</span></td>
+    </tr>
+    <tr>
+      <td><code>long</code> / <code>Long</code></td>
+      <td><span class="en">Count query</span><span class="zh">计数查询</span></td>
+    </tr>
+    <tr>
+      <td><code>int</code> / <code>Integer</code> / <code>void</code></td>
+      <td><span class="en">DML execution (returns affected rows)</span><span class="zh">DML 执行（返回受影响行数）</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  <span class="en">Examples — Direct DTO / Record return (no wrapper needed):</span>
+  <span class="zh">示例 — 直接返回 DTO / Record（无需包装类型）：</span>
+</p>
+<pre><span class="cm">// Direct DTO return</span>
+<span class="an">@BoosterQuery</span>(<span class="str">"SELECT user_name, email FROM t_user WHERE id = :id"</span>)
+<span class="ty">UserDTO</span> <span class="fn">findUserById</span>(<span class="an">@Param</span>(<span class="str">"id"</span>) <span class="ty">Long</span> id);
+
+<span class="cm">// Direct Record return</span>
+<span class="an">@BoosterQuery</span>(<span class="str">"SELECT SUM(amount) AS totalRevenue, COUNT(*) AS orderCount FROM t_order"</span>)
+<span class="ty">SummaryRecord</span> <span class="fn">getOrderSummary</span>();
+
+<span class="cm">// Interface projection return</span>
+<span class="an">@BoosterQuery</span>(<span class="str">"SELECT name, email FROM t_user WHERE id = :id"</span>)
+<span class="ty">UserProjection</span> <span class="fn">findProjectionById</span>(<span class="an">@Param</span>(<span class="str">"id"</span>) <span class="ty">Long</span> id);
+
+<span class="cm">// Optional wrapping</span>
+<span class="an">@BoosterQuery</span>(<span class="str">"SELECT user_name, email FROM t_user WHERE id = :id"</span>)
+<span class="ty">Optional</span>&lt;<span class="ty">UserDTO</span>&gt; <span class="fn">findOptionalUserById</span>(<span class="an">@Param</span>(<span class="str">"id"</span>) <span class="ty">Long</span> id);</pre>
+
+<div class="warning">
+  <strong><span class="en">Important</span><span class="zh">注意</span></strong>
+  <span class="en">Container types (<code>List</code>, <code>Page</code>, <code>Optional</code>) must declare a generic type parameter. Raw types like <code>List</code> (without <code>&lt;T&gt;</code>) will throw <code>IllegalStateException</code> at startup.</span>
+  <span class="zh">容器类型（<code>List</code>、<code>Page</code>、<code>Optional</code>）必须声明泛型参数。使用无泛型的 raw type（如 <code>List</code>）会在启动时抛出 <code>IllegalStateException</code>。</span>
+</div>
+<!-- Configuration -->
+<h2 id="configuration">
+  <span class="en">Configuration Reference</span><span class="zh">配置参考</span>
+</h2>
+<p>
+  <span class="en">All configuration properties under <code>booster.query</code>:</span>
+  <span class="zh">所有 <code>booster.query</code> 下的配置项：</span>
+</p>
+<table>
+  <thead>
+    <tr>
+      <th><span class="en">Property</span><span class="zh">属性</span></th>
+      <th><span class="en">Type</span><span class="zh">类型</span></th>
+      <th><span class="en">Default</span><span class="zh">默认值</span></th>
+      <th><span class="en">Description</span><span class="zh">说明</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>default-limit</code></td>
+      <td><code>long</code></td>
+      <td><code>10000</code></td>
+      <td><span class="en">Default max rows for auto-limit</span><span class="zh">自动限制的默认最大行数</span></td>
+    </tr>
+    <tr>
+      <td><code>enable-auto-limit</code></td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td><span class="en">Enable auto-limit globally</span><span class="zh">全局启用自动限制</span></td>
+    </tr>
+    <tr>
+      <td><code>enable-sql-rewrite</code></td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td><span class="en">Enable SQL rewriting globally</span><span class="zh">全局启用 SQL 改写</span></td>
+    </tr>
+    <tr>
+      <td><code>cache.enabled</code></td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td><span class="en">Enable Caffeine SQL cache</span><span class="zh">启用 Caffeine SQL 缓存</span></td>
+    </tr>
+    <tr>
+      <td><code>cache.maximum-size</code></td>
+      <td><code>long</code></td>
+      <td><code>1000</code></td>
+      <td><span class="en">Max cached entries</span><span class="zh">最大缓存条目数</span></td>
+    </tr>
+    <tr>
+      <td><code>cache.expire-after-write</code></td>
+      <td><code>long</code></td>
+      <td><code>3600000</code></td>
+      <td><span class="en">Cache TTL in milliseconds (default 60 min)</span><span class="zh">缓存过期时间（毫秒，默认 60 分钟）</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3><span class="en">Full Example</span><span class="zh">完整示例</span></h3>
+<pre><span class="cm"># application.yml</span>
+<span class="param">booster</span>:
+  <span class="param">query</span>:
+    <span class="param">default-limit</span>: <span class="num">5000</span>
+    <span class="param">enable-auto-limit</span>: <span class="kw">true</span>
+    <span class="param">enable-sql-rewrite</span>: <span class="kw">true</span>
+    <span class="param">cache</span>:
+      <span class="param">enabled</span>: <span class="kw">true</span>
+      <span class="param">maximum-size</span>: <span class="num">2000</span>
+      <span class="param">expire-after-write</span>: <span class="num">1800000</span></pre>
+</main>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
