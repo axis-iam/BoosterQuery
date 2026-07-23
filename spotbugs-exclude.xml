@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude EI/EI2 warnings on Spring @ConfigurationProperties classes.
+         These classes require mutable getter/setter by design. -->
+    <Match>
+        <Class name="com.chaosguide.boosterquery.config.BoosterQueryProperties"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="com.chaosguide.boosterquery.config.BoosterQueryProperties$Cache"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Exclude EI/EI2 on repository query internals (framework plumbing) -->
+    <Match>
+        <Class name="com.chaosguide.boosterquery.repository.query.BoosterSqlRepositoryQuery"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,CT_CONSTRUCTOR_THROW"/>
+    </Match>
+
+    <!-- Exclude EI2 for Spring/JPA framework-managed collaborators.
+         These are container-provided services, not mutable value objects. -->
+    <Match>
+        <Or>
+            <Class name="com.chaosguide.boosterquery.executor.BoosterNativeExecutor"/>
+            <Class name="com.chaosguide.boosterquery.executor.BoosterQueryExecutor"/>
+            <Class name="com.chaosguide.boosterquery.repository.query.BoosterQueryLookupStrategy"/>
+            <Class name="com.chaosguide.boosterquery.repository.support.BoosterQueryRepositoryFactory"/>
+        </Or>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+</FindBugsFilter>
