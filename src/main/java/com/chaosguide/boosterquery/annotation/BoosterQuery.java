@@ -85,7 +85,8 @@ public @interface BoosterQuery {
     Toggle enableRewrite() default Toggle.INHERIT;
 
     /**
-     * Whether to enable auto-limit protection (auto-appends LIMIT to prevent unbounded queries).
+     * Whether to enable auto-limit protection. It limits unpaged results and rejects paged
+     * requests whose page size exceeds the effective limit.
      * Defaults to {@link Toggle#INHERIT}, which uses the global configuration
      * ({@code booster.query.enable-auto-limit}).
      *
@@ -94,8 +95,9 @@ public @interface BoosterQuery {
     Toggle enableAutoLimit() default Toggle.INHERIT;
 
     /**
-     * Custom limit value for this method. Overrides the global {@code booster.query.default-limit}
-     * when set to a positive value. Use {@code -1} (default) to inherit the global setting.
+     * Custom result and page-size limit for this method. Overrides the global
+     * {@code booster.query.default-limit} when set to a positive value. Use {@code -1} (default)
+     * to inherit the global setting.
      *
      * @return the limit value, or {@code -1} to inherit
      */

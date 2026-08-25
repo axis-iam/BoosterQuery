@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -119,6 +120,118 @@ class BoosterQueryExecutorTest {
             executor.queryList("SELECT * FROM t_test_user", Collections.emptyMap(), TestUser.class);
 
             verify(q, never()).setMaxResults(anyInt());
+        }
+    }
+
+    // ==================== Paginated query bounds ====================
+
+    @Nested
+    class PaginationBounds {
+
+        @Test
+        void shouldRejectPageBeforeDatabaseAccess_whenPageSizeExceedsAutoLimit() {
+            config.setDefaultLimit(2);
+            BoosterQueryExecutor executor = new BoosterQueryExecutor(entityManager, config, null);
+
+            assertThatThrownBy(() -> executor.queryPage(
+                            PageRequest.of(0, 3),
+                            "SELECT * FROM t_test_user",
+                            Collections.emptyMap(),
+                            TestUser.class))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page size 3")
+                    .hasMessageContaining("maximum of 2");
+
+            verify(entityManager, never()).createNativeQuery(anyString());
+            verify(entityManager, never()).createNativeQuery(anyString(), eq(TestUser.class));
+        }
+
+        @Test
+        void shouldRejectCustomCountPageBeforeDatabaseAccess_whenPageSizeExceedsAutoLimit() {
+            config.setDefaultLimit(2);
+            BoosterQueryExecutor executor = new BoosterQueryExecutor(entityManager, config, null);
+
+            assertThatThrownBy(() -> executor.queryPage(
+                            PageRequest.of(0, 3),
+                            "SELECT * FROM t_test_user",
+                            Collections.emptyMap(),
+                            "SELECT COUNT(*) FROM t_test_user",
+                            TestUser.class))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page size 3")
+                    .hasMessageContaining("maximum of 2");
+
+            verify(entityManager, never()).createNativeQuery(anyString());
+            verify(entityManager, never()).createNativeQuery(anyString(), eq(TestUser.class));
+        }
+
+        @Test
+        void shouldKeepTotalCountUnbounded_whenPageSizeIsWithinAutoLimit() {
+            config.setDefaultLimit(2);
+            Query countQuery = mock(Query.class);
+            when(entityManager.createNativeQuery(anyString())).thenReturn(countQuery);
+            when(countQuery.getSingleResult()).thenReturn(3L);
+
+            Query dataQuery = mock(Query.class);
+            when(entityManager.createNativeQuery(anyString(), eq(TestUser.class))).thenReturn(dataQuery);
+            when(dataQuery.getResultList()).thenReturn(List.of(
+                    new TestUser("Alice", 25, "alice@example.com"),
+                    new TestUser("Bob", 30, "bob@example.com")));
+
+            BoosterQueryExecutor executor = new BoosterQueryExecutor(entityManager, config, null);
+            var page = executor.queryPage(
+                    PageRequest.of(0, 2),
+                    "SELECT * FROM t_test_user",
+                    Collections.emptyMap(),
+                    TestUser.class);
+
+            assertThat(page.getContent()).hasSize(2);
+            assertThat(page.getTotalElements()).isEqualTo(3);
+            verify(dataQuery).setMaxResults(2);
+        }
+
+        @Test
+        void shouldAllowPageSizeAboveDefaultLimit_whenAutoLimitIsDisabled() {
+            config.setDefaultLimit(1);
+            config.setEnableAutoLimit(false);
+            Query countQuery = mock(Query.class);
+            when(entityManager.createNativeQuery(anyString())).thenReturn(countQuery);
+            when(countQuery.getSingleResult()).thenReturn(3L);
+
+            Query dataQuery = mock(Query.class);
+            when(entityManager.createNativeQuery(anyString(), eq(TestUser.class))).thenReturn(dataQuery);
+            when(dataQuery.getResultList()).thenReturn(Collections.emptyList());
+
+            BoosterQueryExecutor executor = new BoosterQueryExecutor(entityManager, config, null);
+            executor.queryPage(
+                    PageRequest.of(0, 2),
+                    "SELECT * FROM t_test_user",
+                    Collections.emptyMap(),
+                    TestUser.class);
+
+            verify(dataQuery).setMaxResults(2);
+        }
+
+        @Test
+        void shouldApplyAutoLimitWithoutCountQuery_whenPageableIsUnpaged() {
+            config.setDefaultLimit(2);
+            Query dataQuery = mock(Query.class);
+            when(entityManager.createNativeQuery(anyString(), eq(TestUser.class))).thenReturn(dataQuery);
+            when(dataQuery.getResultList()).thenReturn(List.of(
+                    new TestUser("Alice", 25, "alice@example.com"),
+                    new TestUser("Bob", 30, "bob@example.com")));
+
+            BoosterQueryExecutor executor = new BoosterQueryExecutor(entityManager, config, null);
+            var page = executor.queryPage(
+                    Pageable.unpaged(),
+                    "SELECT * FROM t_test_user",
+                    Collections.emptyMap(),
+                    TestUser.class);
+
+            assertThat(page.getContent()).hasSize(2);
+            assertThat(page.getTotalElements()).isEqualTo(2);
+            verify(entityManager, never()).createNativeQuery(anyString());
+            verify(dataQuery).setMaxResults(2);
         }
     }
 
@@ -366,17 +479,8 @@ class BoosterQueryExecutorTest {
     class OffsetOverflow {
 
         @Test
-        void should_throwArithmeticException_when_offsetOverflowsInt() {
-            config.setEnableAutoLimit(false);
+        void shouldRejectPageBeforeDatabaseAccess_whenOffsetExceedsJpaRange() {
             config.setEnableSqlRewrite(false);
-
-            Query countQuery = mock(Query.class);
-            when(entityManager.createNativeQuery(anyString())).thenReturn(countQuery);
-            when(countQuery.getSingleResult()).thenReturn(Long.MAX_VALUE);
-
-            Query dataQuery = mock(Query.class);
-            when(entityManager.createNativeQuery(anyString(), eq(TestUser.class))).thenReturn(dataQuery);
-            when(dataQuery.getResultList()).thenReturn(Collections.emptyList());
 
             BoosterQueryExecutor executor = new BoosterQueryExecutor(entityManager, config, null);
             // page=Integer.MAX_VALUE, size=2 -> offset exceeds int range
@@ -384,7 +488,12 @@ class BoosterQueryExecutorTest {
 
             assertThatThrownBy(() -> executor.queryPage(hugePageable,
                     "SELECT * FROM t_test_user", Collections.emptyMap(), TestUser.class))
-                    .isInstanceOf(ArithmeticException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page offset")
+                    .hasMessageContaining("JPA maximum");
+
+            verify(entityManager, never()).createNativeQuery(anyString());
+            verify(entityManager, never()).createNativeQuery(anyString(), eq(TestUser.class));
         }
     }
 

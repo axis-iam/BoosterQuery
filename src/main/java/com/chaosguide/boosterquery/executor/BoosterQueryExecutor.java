@@ -146,6 +146,7 @@ public class BoosterQueryExecutor {
     public <T> Page<T> queryPage(Pageable pageable, String sql, Map<String, Object> params, Class<T> resultType) {
         incrementCounter(METRIC_EXECUTE_TOTAL, TAG_TYPE, "page");
         Pageable effectivePageable = pageable == null ? Pageable.unpaged() : pageable;
+        validatePageRequest(effectivePageable);
         // 1. Preprocessing
         PreparedQuery prepared = prepareQuery(sql, params);
         String activeSql = prepared.sql();
@@ -206,6 +207,7 @@ public class BoosterQueryExecutor {
                                  Class<T> resultType) {
         incrementCounter(METRIC_EXECUTE_TOTAL, TAG_TYPE, "page");
         Pageable effectivePageable = pageable == null ? Pageable.unpaged() : pageable;
+        validatePageRequest(effectivePageable);
 
         PreparedQuery prepared = prepareQuery(sql, params);
         String activeSql = prepared.sql();
@@ -555,6 +557,32 @@ public class BoosterQueryExecutor {
     private int safeAutoLimit() {
         long limit = config.getDefaultLimit();
         return (int) Math.min(limit, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Validates a paged request before SQL rewriting or count-query execution.
+     * <p>
+     * When auto-limit protection is enabled, the configured default limit is also the maximum
+     * allowed page size. The count query remains unrestricted and therefore still reports the
+     * complete number of matching rows. JPA accepts an {@code int} offset, so larger offsets are
+     * rejected with a clear error instead of leaking a conversion failure from the execution path.
+     */
+    private void validatePageRequest(Pageable pageable) {
+        if (!pageable.isPaged()) {
+            return;
+        }
+
+        long offset = pageable.getOffset();
+        if (offset > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException(
+                    "Page offset " + offset + " exceeds the JPA maximum of " + Integer.MAX_VALUE);
+        }
+
+        if (config.isEnableAutoLimit() && pageable.getPageSize() > config.getDefaultLimit()) {
+            throw new IllegalArgumentException(
+                    "Page size " + pageable.getPageSize()
+                            + " exceeds the configured maximum of " + config.getDefaultLimit());
+        }
     }
 
     // ==================== Helper Methods ====================

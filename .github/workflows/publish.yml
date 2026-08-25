@@ -24,6 +24,16 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      - name: Verify release tag matches project version
+        shell: bash
+        run: |
+          PROJECT_VERSION=$(bash ./gradlew properties --quiet | awk '$1 == "version:" { print $2 }')
+          EXPECTED_TAG="v${PROJECT_VERSION}"
+          if [[ "$GITHUB_REF_NAME" != "$EXPECTED_TAG" ]]; then
+            echo "Release tag $GITHUB_REF_NAME does not match project version $PROJECT_VERSION"
+            exit 1
+          fi
+
       - name: Verify publishing secrets
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}

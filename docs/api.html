@@ -303,6 +303,12 @@
   </tbody>
 </table>
 
+<div class="warning">
+  <strong><span class="en">Execution contract</span><span class="zh">执行约定</span></strong>
+  <span class="en"><code>@BoosterQuery</code> methods use <code>@Modifying</code> to select DML execution. Without <code>@Modifying</code>, numeric return types are mapped as scalar SELECT results. Count methods must therefore use an explicit count expression, and modifying methods must run within a transaction.</span>
+  <span class="zh"><code>@BoosterQuery</code> 方法通过 <code>@Modifying</code> 选择 DML 执行。未标注 <code>@Modifying</code> 时，数值返回类型按标量 SELECT 结果映射。因此计数方法必须显式使用计数表达式，修改方法必须在事务中运行。</span>
+</div>
+
 <!-- BoosterQueryConfig -->
 <h2 id="booster-query-config">BoosterQueryConfig</h2>
 <p><code>com.chaosguide.boosterquery.config.BoosterQueryConfig</code></p>
@@ -311,7 +317,7 @@
   <span class="zh">SQL 改写器的运行时配置，从 <code>booster.query.*</code> 属性自动配置。</span>
 </p>
 <div class="api-method">
-  <div class="method-sig"><span class="kw">long</span> <span class="fn">getDefaultLimit</span>() <span class="cm">// default: 10000</span></div>
+  <div class="method-sig"><span class="kw">long</span> <span class="fn">getDefaultLimit</span>() <span class="cm">// max rows and paged page size; default: 10000</span></div>
 </div>
 <div class="api-method">
   <div class="method-sig"><span class="kw">void</span> <span class="fn">setDefaultLimit</span>(<span class="kw">long</span> defaultLimit) <span class="cm">// throws IllegalArgumentException if &lt;= 0</span></div>

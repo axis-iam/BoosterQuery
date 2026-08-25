@@ -4,7 +4,7 @@ This file provides guidance to Codex when working with code in this repository.
 
 ## Project Overview
 
-BoosterQuery is a Spring Data JPA native SQL enhancement library (`com.chaosguide:booster-query:1.0.1`). It provides unified query execution, result mapping, parameter binding, and smart SQL rewriting (removing null-parameter conditions and applying a database-agnostic max result limit). Written in Java, built with Gradle (Kotlin DSL), targeting Spring Boot 4.0.3.
+BoosterQuery is a Spring Data JPA native SQL enhancement library (`com.chaosguide:booster-query:1.0.2`). It provides unified query execution, result mapping, parameter binding, and smart SQL rewriting (removing null-parameter conditions and applying a database-agnostic max result limit). Written in Java, built with Gradle (Kotlin DSL), targeting Spring Boot 4.0.3.
 
 ## Build & Test Commands
 

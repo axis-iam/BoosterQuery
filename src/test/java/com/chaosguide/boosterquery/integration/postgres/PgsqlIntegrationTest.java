@@ -17,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -207,6 +208,25 @@ public class PgsqlIntegrationTest {
     }
 
     @Test
+    void testBoosterQueryAnnotationPageLimitKeepsTotalCount() {
+        Page<TestUser> page = smartUserRepository.findUsersWithPageLimit(PageRequest.of(0, 2));
+
+        assertEquals(2, page.getContent().size());
+        assertEquals(3, page.getTotalElements());
+    }
+
+    @Test
+    void testBoosterQueryAnnotationRejectsPageSizeAboveLimit() {
+        InvalidDataAccessApiUsageException exception = assertThrows(
+                InvalidDataAccessApiUsageException.class,
+                () -> smartUserRepository.findUsersWithPageLimit(PageRequest.of(0, 3)));
+
+        IllegalArgumentException cause = assertInstanceOf(IllegalArgumentException.class, exception.getCause());
+        assertTrue(cause.getMessage().contains("Page size 3"));
+        assertTrue(cause.getMessage().contains("maximum of 2"));
+    }
+
+    @Test
     void testBoosterPageWithDto() {
         String sql = "select name, email from t_test_user order by age";
         Pageable pageable = PageRequest.of(0, 2);
@@ -269,6 +289,16 @@ public class PgsqlIntegrationTest {
     void testBoosterQueryAnnotationCount() {
         long count = smartUserRepository.countByMinAgeAnno(30);
         assertEquals(2, count);
+    }
+
+    @Test
+    void testBoosterQueryAnnotationNumericScalarResults() {
+        Integer age = smartUserRepository.findAgeByNameAnno("Alice");
+        Long id = smartUserRepository.findIdByNameAnno("Alice");
+
+        assertEquals(25, age);
+        assertNotNull(id);
+        assertTrue(id > 0);
     }
 
     @Test

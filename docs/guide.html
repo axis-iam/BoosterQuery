@@ -84,13 +84,13 @@
     <button class="tab-btn" data-tab="maven-dep">Maven</button>
   </div>
   <div class="tab-content active" data-tab="gradle-dep">
-<pre><span class="fn">implementation</span>(<span class="str">"com.chaosguide:booster-query:1.0.1"</span>)</pre>
+<pre><span class="fn">implementation</span>(<span class="str">"com.chaosguide:booster-query:1.0.2"</span>)</pre>
   </div>
   <div class="tab-content" data-tab="maven-dep">
 <pre><span class="kw">&lt;dependency&gt;</span>
     <span class="kw">&lt;groupId&gt;</span><span class="str">com.chaosguide</span><span class="kw">&lt;/groupId&gt;</span>
     <span class="kw">&lt;artifactId&gt;</span><span class="str">booster-query</span><span class="kw">&lt;/artifactId&gt;</span>
-    <span class="kw">&lt;version&gt;</span><span class="str">1.0.1</span><span class="kw">&lt;/version&gt;</span>
+    <span class="kw">&lt;version&gt;</span><span class="str">1.0.2</span><span class="kw">&lt;/version&gt;</span>
 <span class="kw">&lt;/dependency&gt;</span></pre>
   </div>
 </div>
@@ -327,6 +327,11 @@ repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t
   <span class="en">Auto-limit only applies to <code>booster*</code> methods. The <code>native*</code> methods do not apply auto-limit. You can also override per-method via <code>@BoosterQuery(enableAutoLimit = TRUE, autoLimit = 100)</code>.</span>
   <span class="zh">自动限制仅适用于 <code>booster*</code> 方法，<code>native*</code> 方法不会自动限制。也可以通过 <code>@BoosterQuery(enableAutoLimit = TRUE, autoLimit = 100)</code> 逐方法覆盖。</span>
 </div>
+<div class="warning">
+  <strong><span class="en">Pagination bound</span><span class="zh">分页上限</span></strong>
+  <span class="en">When auto-limit is enabled, the effective limit is also the maximum <code>Pageable</code> page size. Oversized pages are rejected before COUNT execution. Valid paged queries still use an unrestricted COUNT, so <code>totalElements</code> remains the full matching total. Unpaged requests skip COUNT and report the limited content size as their total.</span>
+  <span class="zh">启用自动限制后，有效 limit 同时也是 <code>Pageable</code> 的最大分页大小。超限请求会在执行 COUNT 前被拒绝；合法分页的 COUNT 不受限制，因此 <code>totalElements</code> 仍是完整匹配总数。不分页请求跳过 COUNT，并以限流后的内容数量作为 total。</span>
+</div>
 
 <!-- Caching -->
 <h2 id="caching">
@@ -409,19 +414,21 @@ repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t
       <td><span class="en">Single row as key-value map</span><span class="zh">单行作为键值 Map</span></td>
     </tr>
     <tr>
-      <td><code>String</code>, <code>BigDecimal</code>, etc.</td>
+      <td><code>String</code>, <code>Integer</code>, <code>Long</code>, <code>BigDecimal</code>, etc.</td>
       <td><span class="en">Scalar value extraction</span><span class="zh">标量值提取</span></td>
     </tr>
     <tr>
-      <td><code>long</code> / <code>Long</code></td>
-      <td><span class="en">Count query</span><span class="zh">计数查询</span></td>
-    </tr>
-    <tr>
-      <td><code>int</code> / <code>Integer</code> / <code>void</code></td>
-      <td><span class="en">DML execution (returns affected rows)</span><span class="zh">DML 执行（返回受影响行数）</span></td>
+      <td><code>@Modifying</code> + <code>int</code> / <code>Integer</code> / <code>void</code></td>
+      <td><span class="en">DML execution; numeric returns contain affected rows</span><span class="zh">DML 执行；数值返回类型表示受影响行数</span></td>
     </tr>
   </tbody>
 </table>
+
+<div class="warning">
+  <strong><span class="en">Count and DML contracts</span><span class="zh">计数与 DML 约定</span></strong>
+  <span class="en">Count methods must declare an explicit count expression, such as <code>SELECT COUNT(*)</code>. DML methods must use Spring Data's <code>@Modifying</code> and execute within a transaction. Numeric return types without <code>@Modifying</code> are regular scalar query results.</span>
+  <span class="zh">计数方法必须显式声明计数表达式，例如 <code>SELECT COUNT(*)</code>。DML 方法必须使用 Spring Data 的 <code>@Modifying</code> 并在事务中执行。未标注 <code>@Modifying</code> 的数值返回类型属于普通标量查询。</span>
+</div>
 
 <p>
   <span class="en">Examples — Direct DTO / Record return (no wrapper needed):</span>
@@ -470,7 +477,7 @@ repo.<span class="fn">boosterQueryList</span>(<span class="str">"SELECT * FROM t
       <td><code>default-limit</code></td>
       <td><code>long</code></td>
       <td><code>10000</code></td>
-      <td><span class="en">Default max rows for auto-limit</span><span class="zh">自动限制的默认最大行数</span></td>
+      <td><span class="en">Default max rows and maximum paged page size</span><span class="zh">默认最大行数及分页大小上限</span></td>
     </tr>
     <tr>
       <td><code>enable-auto-limit</code></td>

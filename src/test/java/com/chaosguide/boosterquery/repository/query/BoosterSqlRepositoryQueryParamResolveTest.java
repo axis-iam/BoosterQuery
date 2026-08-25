@@ -30,12 +30,12 @@ class BoosterSqlRepositoryQueryParamResolveTest {
     // ==================== Test Helpers: invoke private methods via reflection ====================
 
     /**
-     * Invokes BoosterSqlRepositoryQuery.MethodArguments.resolveNamedParams
+     * Invokes BoosterSqlRepositoryQuery.MethodArguments.resolveNamedParameters
      */
-    private static Map<String, Object> invokeResolveNamedParams(Method method,
-                                                                 Parameter[] parameters,
-                                                                 Object[] values,
-                                                                 List<Integer> nonSpecialIndexes) throws Exception {
+    private static Map<String, Object> invokeResolveNamedParameters(Method method,
+                                                                   Parameter[] parameters,
+                                                                   Object[] values,
+                                                                   List<Integer> queryParameterIndexes) throws Exception {
         // MethodArguments is a private inner record of BoosterSqlRepositoryQuery
         Class<?> methodArgumentsClass = null;
         for (Class<?> inner : BoosterSqlRepositoryQuery.class.getDeclaredClasses()) {
@@ -47,17 +47,18 @@ class BoosterSqlRepositoryQueryParamResolveTest {
         assertNotNull(methodArgumentsClass, "MethodArguments inner class not found");
 
         Method resolveMethod = methodArgumentsClass.getDeclaredMethod(
-                "resolveNamedParams", Method.class, Parameter[].class, Object[].class, List.class);
+                "resolveNamedParameters", Method.class, Parameter[].class, Object[].class, List.class);
         resolveMethod.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) resolveMethod.invoke(null, method, parameters, values, nonSpecialIndexes);
+        Map<String, Object> result = (Map<String, Object>) resolveMethod.invoke(
+                null, method, parameters, values, queryParameterIndexes);
         return result;
     }
 
     /**
-     * Invokes BoosterSqlRepositoryQuery.resolveParamName
+     * Invokes BoosterSqlRepositoryQuery.resolveParameterName
      */
-    private static String invokeResolveParamName(Parameter parameter, Method method) throws Exception {
+    private static String invokeResolveParameterName(Parameter parameter) throws Exception {
         Class<?> methodArgumentsClass = null;
         for (Class<?> inner : BoosterSqlRepositoryQuery.class.getDeclaredClasses()) {
             if (inner.getSimpleName().equals("MethodArguments")) {
@@ -67,9 +68,9 @@ class BoosterSqlRepositoryQueryParamResolveTest {
         }
         assertNotNull(methodArgumentsClass, "MethodArguments inner class not found");
 
-        Method resolveMethod = methodArgumentsClass.getDeclaredMethod("resolveParamName", Parameter.class, Method.class);
+        Method resolveMethod = methodArgumentsClass.getDeclaredMethod("resolveParameterName", Parameter.class);
         resolveMethod.setAccessible(true);
-        return (String) resolveMethod.invoke(null, parameter, method);
+        return (String) resolveMethod.invoke(null, parameter);
     }
 
     // ==================== Test interface (parameter names visible when compiled with -parameters) ====================
@@ -90,10 +91,10 @@ class BoosterSqlRepositoryQueryParamResolveTest {
         return TestMethods.class.getMethod(name, paramTypes);
     }
 
-    // ==================== resolveParamName Unit Tests ====================
+    // ==================== resolveParameterName Unit Tests ====================
 
     @Nested
-    @DisplayName("resolveParamName")
+    @DisplayName("resolveParameterName")
     class ResolveParamNameTest {
 
         @Test
@@ -102,7 +103,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Method method = getMethod("withParam", String.class);
             Parameter parameter = method.getParameters()[0];
 
-            String name = invokeResolveParamName(parameter, method);
+            String name = invokeResolveParameterName(parameter);
 
             assertEquals("userName", name);
         }
@@ -113,7 +114,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Method method = getMethod("withoutParam", String.class);
             Parameter parameter = method.getParameters()[0];
 
-            String name = invokeResolveParamName(parameter, method);
+            String name = invokeResolveParameterName(parameter);
 
             // This project is compiled with -parameters, so isNamePresent() == true
             if (parameter.isNamePresent()) {
@@ -128,7 +129,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Method method = getMethod("withBlankParam", String.class);
             Parameter parameter = method.getParameters()[0];
 
-            String name = invokeResolveParamName(parameter, method);
+            String name = invokeResolveParameterName(parameter);
 
             // @Param("") is treated as invalid, falls back to reflection
             if (parameter.isNamePresent()) {
@@ -138,10 +139,10 @@ class BoosterSqlRepositoryQueryParamResolveTest {
         }
     }
 
-    // ==================== resolveNamedParams Unit Tests ====================
+    // ==================== resolveNamedParameters Unit Tests ====================
 
     @Nested
-    @DisplayName("resolveNamedParams - single parameter scenarios")
+    @DisplayName("resolveNamedParameters - single parameter scenarios")
     class SingleParamTest {
 
         @Test
@@ -151,7 +152,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Parameter[] params = method.getParameters();
             Object[] values = {"Alice"};
 
-            Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0));
+            Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0));
 
             assertEquals(Map.of("userName", "Alice"), result);
         }
@@ -164,7 +165,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Object[] values = {"Alice"};
 
             if (params[0].isNamePresent()) {
-                Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0));
+                Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0));
                 assertEquals(Map.of("name", "Alice"), result);
             }
         }
@@ -176,7 +177,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Parameter[] params = method.getParameters();
             Object[] values = {null};
 
-            Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0));
+            Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0));
 
             assertTrue(result.containsKey("userName"), "param name should be retained");
             assertNull(result.get("userName"), "param value should be null");
@@ -190,7 +191,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Object[] values = {null};
 
             if (params[0].isNamePresent()) {
-                Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0));
+                Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0));
                 assertTrue(result.containsKey("name"), "param name should be resolved via -parameters");
                 assertNull(result.get("name"), "param value should be null");
             }
@@ -206,7 +207,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             mapValue.put("age", 25);
             Object[] values = {mapValue};
 
-            Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0));
+            Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0));
 
             assertEquals("Alice", result.get("name"));
             assertEquals(25, result.get("age"));
@@ -214,7 +215,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
     }
 
     @Nested
-    @DisplayName("resolveNamedParams - multiple parameter scenarios")
+    @DisplayName("resolveNamedParameters - multiple parameter scenarios")
     class MultiParamTest {
 
         @Test
@@ -225,7 +226,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             // nonSpecialIndexes excludes Pageable (index 2)
             Object[] values = {"Alice", 25, Pageable.unpaged()};
 
-            Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0, 1));
+            Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0, 1));
 
             assertEquals("Alice", result.get("name"));
             assertEquals(25, result.get("age"));
@@ -239,7 +240,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Object[] values = {"Alice", 25, Pageable.unpaged()};
 
             if (params[0].isNamePresent()) {
-                Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0, 1));
+                Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0, 1));
                 assertEquals("Alice", result.get("name"));
                 assertEquals(25, result.get("age"));
             }
@@ -253,7 +254,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Object[] values = {"Alice", 25, Pageable.unpaged()};
 
             if (params[1].isNamePresent()) {
-                Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0, 1));
+                Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0, 1));
                 // First param has @Param("name")
                 assertEquals("Alice", result.get("name"));
                 // Second param resolved via -parameters reflection as "age"
@@ -268,7 +269,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Parameter[] params = method.getParameters();
             Object[] values = {"Alice", null, Pageable.unpaged()};
 
-            Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of(0, 1));
+            Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of(0, 1));
 
             assertEquals("Alice", result.get("name"));
             assertTrue(result.containsKey("age"), "null param name should be retained");
@@ -277,7 +278,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
     }
 
     @Nested
-    @DisplayName("resolveNamedParams - no parameter scenarios")
+    @DisplayName("resolveNamedParameters - no parameter scenarios")
     class NoParamTest {
 
         @Test
@@ -288,7 +289,7 @@ class BoosterSqlRepositoryQueryParamResolveTest {
             Object[] values = {Pageable.unpaged()};
 
             // Pageable is excluded, nonSpecialIndexes is empty
-            Map<String, Object> result = invokeResolveNamedParams(method, params, values, List.of());
+            Map<String, Object> result = invokeResolveNamedParameters(method, params, values, List.of());
 
             assertTrue(result.isEmpty());
         }

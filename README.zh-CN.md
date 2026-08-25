@@ -7,7 +7,7 @@
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/Java-25%2B-orange" alt="Java 25+">
   <img src="https://img.shields.io/badge/Spring%20Boot-4.0-green" alt="Spring Boot 4.0">
-  <img src="https://img.shields.io/badge/Maven%20Central-1.0.1-blue" alt="Maven Central">
+  <img src="https://img.shields.io/maven-central/v/com.chaosguide/booster-query?label=Maven%20Central" alt="Maven Central">
 </p>
 
 <p align="center">
@@ -23,7 +23,7 @@
 - **原生 SQL 执行** — 统一 API 支持分页、列表、单条、计数和 DML 查询
 - **智能 SQL 改写** — 参数为 null/空白/空集合时自动移除 WHERE/HAVING/JOIN 条件（基于 JSqlParser AST）
 - **自动结果映射** — Tuple → Entity / DTO / Record / 接口投影 / Map / 基础类型，下划线自动转驼峰
-- **Auto-Limit 防护** — 自动追加 LIMIT 防止大结果集（默认 10,000 行）
+- **Auto-Limit 防护** — 通过数据库无关的最大结果数限制防止大结果集（默认 10,000 行）
 - **Caffeine 缓存** — 缓存改写后的 SQL，可配置大小和过期时间
 - **@BoosterQuery 注解** — 声明式 SQL 查询，支持逐方法覆盖配置
 
@@ -33,7 +33,7 @@
 
 **Gradle (Kotlin DSL):**
 ```kotlin
-implementation("com.chaosguide:booster-query:1.0.1")
+implementation("com.chaosguide:booster-query:1.0.2")
 ```
 
 **Maven:**
@@ -41,7 +41,7 @@ implementation("com.chaosguide:booster-query:1.0.1")
 <dependency>
     <groupId>com.chaosguide</groupId>
     <artifactId>booster-query</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 ### 2. 启用 BoosterQuery
@@ -112,9 +112,12 @@ public interface UserRepository extends BoosterQueryRepository<User, Long> {
 | `Optional<T>` | 单条结果包装为 Optional |
 | `T`（DTO / Record / 接口投影 / 实体） | 直接单条结果映射 |
 | `Map<String, Object>` | 单行作为键值 Map |
-| `String`、`BigDecimal` 等 | 标量值提取 |
-| `long` / `Long` | 计数查询 |
-| `int` / `Integer` / `void` | DML 执行（返回受影响行数） |
+| `String`、`Integer`、`Long`、`BigDecimal` 等 | 标量值提取 |
+| `@Modifying` + `int` / `Integer` / `void` | DML 执行（返回受影响行数） |
+
+计数方法应显式编写计数表达式，例如 `@BoosterQuery("SELECT COUNT(*) FROM t_user")`。
+DML 方法必须标注 Spring Data 的 `@Modifying`，并在事务中执行。未标注
+`@Modifying` 的数值返回类型会作为普通标量查询结果处理。
 
 **示例 — 直接返回 DTO / Record：**
 
@@ -198,6 +201,11 @@ booster:
 设置 `booster.query.enable-sql-rewrite=false` 可以全局关闭 null 条件改写。
 仓库方法可通过 `@BoosterQuery(enableRewrite = Toggle.FALSE)` 或 `Toggle.TRUE`
 逐方法覆盖全局配置。
+
+启用自动限制后，`default-limit` 既限制不分页查询的返回行数，也是 `Pageable`
+允许的最大分页大小。分页大小超限时会在执行 count 查询前直接拒绝；合法分页的
+count 查询不会被限流，因此 `Page.getTotalElements()` 仍是完整匹配总数。不分页
+请求不会执行 count 查询，其 total 等于限流后的内容数量。
 
 ## JaCoCo 与 JSqlParser
 

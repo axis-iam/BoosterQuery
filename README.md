@@ -7,7 +7,7 @@
   <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/Java-25%2B-orange" alt="Java 25+">
   <img src="https://img.shields.io/badge/Spring%20Boot-4.0-green" alt="Spring Boot 4.0">
-  <img src="https://img.shields.io/badge/Maven%20Central-1.0.1-blue" alt="Maven Central">
+  <img src="https://img.shields.io/maven-central/v/com.chaosguide/booster-query?label=Maven%20Central" alt="Maven Central">
 </p>
 
 <p align="center">
@@ -23,7 +23,7 @@ A lightweight library that enhances Spring Data JPA with native SQL execution, a
 - **Native SQL Execution** — Unified API for paged, list, single-object, count, and DML queries
 - **SQL Rewriting** — Automatically removes WHERE/HAVING/JOIN conditions when parameters are null/blank/empty (AST-based via JSqlParser)
 - **Result Mapping** — Tuple to Entity, DTO, Record, Interface Projection, Map, or scalar types with underscore-to-camelCase conversion
-- **Auto-Limit Protection** — Prevents large result sets by auto-appending LIMIT (default 10,000 rows)
+- **Auto-Limit Protection** — Prevents large result sets with a database-agnostic maximum result count (default 10,000 rows)
 - **Caffeine Caching** — Cache rewritten SQL with configurable size and TTL
 - **@BoosterQuery Annotation** — Declarative SQL on repository methods with per-method overrides
 
@@ -33,7 +33,7 @@ A lightweight library that enhances Spring Data JPA with native SQL execution, a
 
 **Gradle (Kotlin DSL):**
 ```kotlin
-implementation("com.chaosguide:booster-query:1.0.1")
+implementation("com.chaosguide:booster-query:1.0.2")
 ```
 
 **Maven:**
@@ -41,7 +41,7 @@ implementation("com.chaosguide:booster-query:1.0.1")
 <dependency>
     <groupId>com.chaosguide</groupId>
     <artifactId>booster-query</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -112,9 +112,13 @@ public interface UserRepository extends BoosterQueryRepository<User, Long> {
 | `Optional<T>` | Single result wrapped in Optional |
 | `T` (DTO / Record / Interface / Entity) | Direct single-result mapping |
 | `Map<String, Object>` | Single row as key-value map |
-| `String`, `BigDecimal`, etc. | Scalar value extraction |
-| `long` / `Long` | Count query |
-| `int` / `Integer` / `void` | DML execution (returns affected rows) |
+| `String`, `Integer`, `Long`, `BigDecimal`, etc. | Scalar value extraction |
+| `@Modifying` + `int` / `Integer` / `void` | DML execution (returns affected rows) |
+
+Count methods should declare an explicit count expression, for example
+`@BoosterQuery("SELECT COUNT(*) FROM t_user")`. DML methods must be annotated with
+Spring Data's `@Modifying` and run within a transaction. Numeric return types without
+`@Modifying` are treated as scalar query results.
 
 **Examples — Direct DTO / Record return:**
 
@@ -200,6 +204,12 @@ booster:
 Set `booster.query.enable-sql-rewrite=false` to bypass null-condition rewriting
 globally. For repository methods, use `@BoosterQuery(enableRewrite = Toggle.FALSE)`
 or `Toggle.TRUE` to override the global setting per query.
+
+When auto-limit is enabled, `default-limit` limits unpaged results and is also the
+maximum allowed `Pageable` page size. An oversized page is rejected before the count
+query runs. For a valid paged request, the count query is not limited, so
+`Page.getTotalElements()` still reports the full number of matching rows. An unpaged
+request does not run a count query; its total equals the limited content size.
 
 ## JaCoCo And JSqlParser
 

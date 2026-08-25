@@ -26,8 +26,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class BoosterQueryProperties {
 
     /**
-     * Default LIMIT value.
-     * Automatically appended when the SQL has no LIMIT clause.
+     * Default maximum result count.
+     * Applied to unpaged queries without an explicit limit and used as the maximum page size.
      * <p>
      * Default: 10000
      */
@@ -50,22 +50,22 @@ public class BoosterQueryProperties {
      */
     private Cache cache = new Cache();
 
-    /** Returns the default LIMIT value. */
+    /** Returns the maximum result count and page size used by auto-limit protection. */
     public long getDefaultLimit() {
         return defaultLimit;
     }
 
-    /** Sets the default LIMIT value. */
+    /** Sets the maximum result count and page size used by auto-limit protection. */
     public void setDefaultLimit(long defaultLimit) {
         this.defaultLimit = defaultLimit;
     }
 
-    /** Returns whether auto-appending LIMIT is enabled. */
+    /** Returns whether automatic result-size protection is enabled. */
     public boolean isEnableAutoLimit() {
         return enableAutoLimit;
     }
 
-    /** Sets whether to automatically append LIMIT to queries. */
+    /** Sets whether to enable automatic result-size protection. */
     public void setEnableAutoLimit(boolean enableAutoLimit) {
         this.enableAutoLimit = enableAutoLimit;
     }

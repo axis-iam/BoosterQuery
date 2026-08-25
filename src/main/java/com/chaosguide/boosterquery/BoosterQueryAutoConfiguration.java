@@ -18,18 +18,20 @@ package com.chaosguide.boosterquery;
 import com.chaosguide.boosterquery.cache.BoosterCache;
 import com.chaosguide.boosterquery.cache.CaffeineBoosterCache;
 import com.chaosguide.boosterquery.config.BoosterQueryConfig;
+import com.chaosguide.boosterquery.config.BoosterQueryProperties;
 import com.chaosguide.boosterquery.executor.BoosterNativeExecutor;
 import com.chaosguide.boosterquery.executor.BoosterQueryExecutor;
 import com.chaosguide.boosterquery.support.MetricsRecorder;
 import com.chaosguide.boosterquery.support.MicrometerMetricsRecorder;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.persistence.EntityManager;
-import com.chaosguide.boosterquery.config.BoosterQueryProperties;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -107,9 +109,9 @@ public class BoosterQueryAutoConfiguration {
      * The {@link BoosterCache} dependency is resolved lazily via {@link ObjectProvider} and
      * may be {@code null} when caching is not enabled.
      * <p>
-     * {@link MetricsRecorder} is optionally resolved from the container. When Micrometer is not
-     * on the classpath, the inner {@link MicrometerConfiguration} is not loaded, no
-     * {@code MetricsRecorder} bean exists, and the executor defaults to no-op metrics.
+     * {@link MetricsRecorder} is optionally resolved from the container. When Micrometer or a
+     * {@link MeterRegistry} bean is not available, no {@code MetricsRecorder} bean exists and the
+     * executor defaults to no-op metrics.
      *
      * @param entityManager   the JPA entity manager
      * @param config          the SQL rewriter configuration
@@ -127,20 +129,21 @@ public class BoosterQueryAutoConfiguration {
     }
 
     /**
-     * Inner conditional configuration class: only loaded when Micrometer is on the classpath.
+     * Inner conditional configuration class: only loaded when Micrometer and a single candidate
+     * {@link MeterRegistry} bean are available.
      * <p>
      * Registers a {@link MicrometerMetricsRecorder} bean backed by the application's
-     * {@link io.micrometer.core.instrument.MeterRegistry}.
+     * {@link MeterRegistry}.
      */
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
+    @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnSingleCandidate(MeterRegistry.class)
     static class MicrometerConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(MetricsRecorder.class)
-        MetricsRecorder boosterMetricsRecorder(ObjectProvider<io.micrometer.core.instrument.MeterRegistry> registryProvider) {
-            io.micrometer.core.instrument.MeterRegistry registry = registryProvider.getIfAvailable();
-            return registry != null ? new MicrometerMetricsRecorder(registry) : MetricsRecorder.noOp();
+        MetricsRecorder boosterMetricsRecorder(MeterRegistry registry) {
+            return new MicrometerMetricsRecorder(registry);
         }
     }
 }

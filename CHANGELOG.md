@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-08-25
+
+### Added
+- Added scalar result mapping for numeric `@BoosterQuery` methods and explicit `@Modifying`-based DML execution
+- Added page-size and JPA offset validation before SQL rewriting or count-query execution
+- Added focused query lookup, auto-configuration, pagination, and MySQL/PostgreSQL integration tests
+
+### Changed
+- Auto-limit now also defines the maximum allowed `Pageable` page size while keeping valid pagination counts unrestricted
+- Micrometer auto-configuration now remains safely optional when Micrometer is absent
+- Updated the consumer documentation and GitHub Pages for query execution, auto-limit pagination, and bean loading
+
+### Fixed
+- Fixed numeric scalar repository methods being misclassified as DML operations
+- Fixed repository query execution and result-type resolution for scalar, count, and modifying methods
+- Removed the test-only Kotlin standard library from the published consumer POM
+
 ## [1.0.1] - 2026-07-23
 
 ### Fixed

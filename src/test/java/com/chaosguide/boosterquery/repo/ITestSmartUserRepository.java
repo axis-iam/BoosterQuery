@@ -32,11 +32,20 @@ public interface ITestSmartUserRepository extends BoosterQueryRepository<TestUse
     @BoosterQuery("select name, email from t_test_user where age = :age")
     Page<UserDTO> findUserDTOByAgeAnnoNoAs(@Param("age") Integer age, Pageable pageable);
 
+    @BoosterQuery(value = "select * from t_test_user order by age", autoLimit = 2)
+    Page<TestUser> findUsersWithPageLimit(Pageable pageable);
+
     @BoosterQuery("select * from t_test_user where age >= :minAge and name = :name")
     List<TestUser> findUsersByMinAgeAndNameAnno(@Param("minAge") Integer minAge, @Param("name") String name);
 
     @BoosterQuery("select count(*) from t_test_user where age >= :minAge")
     long countByMinAgeAnno(@Param("minAge") Integer minAge);
+
+    @BoosterQuery("select age from t_test_user where name = :name")
+    Integer findAgeByNameAnno(@Param("name") String name);
+
+    @BoosterQuery("select id from t_test_user where name = :name")
+    Long findIdByNameAnno(@Param("name") String name);
 
     @Modifying
     @Transactional

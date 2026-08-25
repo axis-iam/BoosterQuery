@@ -23,8 +23,8 @@ package com.chaosguide.boosterquery.config;
 public class BoosterQueryConfig {
 
     /**
-     * Default LIMIT value.
-     * Automatically appended when the SQL has no LIMIT clause.
+     * Default maximum result count.
+     * Applied to unpaged queries without an explicit limit and used as the maximum page size.
      * <p>
      * Default: 10000
      */
@@ -49,21 +49,21 @@ public class BoosterQueryConfig {
     /**
      * Creates a config instance with the specified limit settings.
      *
-     * @param defaultLimit    the default LIMIT value appended to queries without an explicit LIMIT
-     * @param enableAutoLimit whether to automatically append LIMIT to queries
+     * @param defaultLimit    the maximum result count and page size when auto-limit is enabled
+     * @param enableAutoLimit whether to enable automatic result-size protection
      */
     public BoosterQueryConfig(long defaultLimit, boolean enableAutoLimit) {
         this.defaultLimit = defaultLimit;
         this.enableAutoLimit = enableAutoLimit;
     }
 
-    /** Returns the default LIMIT value. */
+    /** Returns the maximum result count and page size used by auto-limit protection. */
     public long getDefaultLimit() {
         return defaultLimit;
     }
 
     /**
-     * Sets the default LIMIT value.
+     * Sets the maximum result count and page size used by auto-limit protection.
      *
      * @param defaultLimit the limit value; must be greater than 0
      * @throws IllegalArgumentException if {@code defaultLimit} is less than or equal to 0
@@ -75,12 +75,12 @@ public class BoosterQueryConfig {
         this.defaultLimit = defaultLimit;
     }
 
-    /** Returns whether auto-appending LIMIT is enabled. */
+    /** Returns whether automatic result-size protection is enabled. */
     public boolean isEnableAutoLimit() {
         return enableAutoLimit;
     }
 
-    /** Sets whether to automatically append LIMIT to queries. */
+    /** Sets whether to enable automatic result-size protection. */
     public void setEnableAutoLimit(boolean enableAutoLimit) {
         this.enableAutoLimit = enableAutoLimit;
     }

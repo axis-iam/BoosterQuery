@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests return type inference logic of BoosterSqlRepositoryQuery.resolveElementType.
+ * Tests return type inference logic of BoosterSqlRepositoryQuery.resolveResultType.
  * <p>
  * Covered scenarios:
  * - Direct DTO / Record / interface projection return should not fall back to entity class
@@ -28,17 +28,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * - Raw type containers (List, Page without generics) should throw exception
  * - Regression protection for generic type extraction from container types
  */
-class BoosterSqlRepositoryQueryElementTypeTest {
+class BoosterSqlRepositoryQueryResultTypeTest {
 
     // ==================== Test Helpers ====================
 
     /**
-     * Invokes BoosterSqlRepositoryQuery.resolveElementType(Method, BoosterQuery) via reflection
+     * Invokes BoosterSqlRepositoryQuery.resolveResultType(Method, BoosterQuery) via reflection
      */
-    private static Class<?> invokeResolveElementType(Method method,
-                                                      BoosterQuery boosterQuery) throws Exception {
+    private static Class<?> invokeResolveResultType(Method method,
+                                                    BoosterQuery boosterQuery) throws Exception {
         Method resolveMethod = BoosterSqlRepositoryQuery.class.getDeclaredMethod(
-                "resolveElementType", Method.class, BoosterQuery.class);
+                "resolveResultType", Method.class, BoosterQuery.class);
         resolveMethod.setAccessible(true);
         return (Class<?>) resolveMethod.invoke(null, method, boosterQuery);
     }
@@ -77,8 +77,8 @@ class BoosterSqlRepositoryQueryElementTypeTest {
         @BoosterQuery("SELECT COUNT(*) FROM t_test_user")
         long countQuery();
 
-        @BoosterQuery("UPDATE t_test_user SET name = 'x'")
-        int modifyQuery();
+        @BoosterQuery("SELECT age FROM t_test_user LIMIT 1")
+        int queryIntegerScalar();
 
         // Map return
         @BoosterQuery("SELECT name, email FROM t_test_user LIMIT 1")
@@ -131,68 +131,68 @@ class BoosterSqlRepositoryQueryElementTypeTest {
     // ==================== Direct Return Type Tests (core fix scenarios) ====================
 
     @Test
-    @DisplayName("Direct DTO return: elementType should be DTO class, not entity class")
+    @DisplayName("Direct DTO return: resultType should be DTO class, not entity class")
     void directDto_shouldReturnDtoClass() throws Exception {
         Method method = getMethod("queryOneDto");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOneDto"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOneDto"));
         assertEquals(UserDTO.class, result, "should return declared DTO type, not entity class");
     }
 
     @Test
-    @DisplayName("Direct Record return: elementType should be Record class")
+    @DisplayName("Direct Record return: resultType should be Record class")
     void directRecord_shouldReturnRecordClass() throws Exception {
         Method method = getMethod("queryOneRecord");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOneRecord"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOneRecord"));
         assertEquals(SummaryRecord.class, result);
     }
 
     @Test
-    @DisplayName("Direct interface projection return: elementType should be interface type")
+    @DisplayName("Direct interface projection return: resultType should be interface type")
     void directProjection_shouldReturnInterfaceClass() throws Exception {
         Method method = getMethod("queryOneProjection");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOneProjection"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOneProjection"));
         assertEquals(SummaryProjection.class, result);
     }
 
     @Test
-    @DisplayName("Direct entity return: elementType should be entity class")
+    @DisplayName("Direct entity return: resultType should be entity class")
     void directEntity_shouldReturnEntityClass() throws Exception {
         Method method = getMethod("queryOneEntity");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOneEntity"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOneEntity"));
         assertEquals(TestUser.class, result);
     }
 
     @Test
-    @DisplayName("Direct Map return: elementType should be Map type")
+    @DisplayName("Direct Map return: resultType should be Map type")
     void directMap_shouldReturnMapClass() throws Exception {
         Method method = getMethod("queryOneMap");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOneMap"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOneMap"));
         assertEquals(Map.class, result);
     }
 
     // ==================== Simple Type Tests (boundary scenarios) ====================
 
     @Test
-    @DisplayName("String return: elementType should be String.class")
+    @DisplayName("String return: resultType should be String.class")
     void directString_shouldReturnStringClass() throws Exception {
         Method method = getMethod("queryOneString");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOneString"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOneString"));
         assertEquals(String.class, result);
     }
 
     @Test
-    @DisplayName("BigDecimal return: elementType should be BigDecimal.class")
+    @DisplayName("BigDecimal return: resultType should be BigDecimal.class")
     void directBigDecimal_shouldReturnBigDecimalClass() throws Exception {
         Method method = getMethod("queryTotalAmount");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryTotalAmount"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryTotalAmount"));
         assertEquals(BigDecimal.class, result);
     }
 
     @Test
-    @DisplayName("LocalDateTime return: elementType should be LocalDateTime.class")
+    @DisplayName("LocalDateTime return: resultType should be LocalDateTime.class")
     void directLocalDateTime_shouldReturnLocalDateTimeClass() throws Exception {
         Method method = getMethod("queryLatestTime");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryLatestTime"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryLatestTime"));
         assertEquals(LocalDateTime.class, result);
     }
 
@@ -202,7 +202,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
     @DisplayName("Page<DTO> should extract DTO type from generics")
     void pageDto_shouldExtractGenericType() throws Exception {
         Method method = getMethod("queryPageDto", Pageable.class);
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryPageDto", Pageable.class));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryPageDto", Pageable.class));
         assertEquals(UserDTO.class, result);
     }
 
@@ -210,7 +210,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
     @DisplayName("List<DTO> should extract DTO type from generics")
     void listDto_shouldExtractGenericType() throws Exception {
         Method method = getMethod("queryListDto");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryListDto"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryListDto"));
         assertEquals(UserDTO.class, result);
     }
 
@@ -218,7 +218,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
     @DisplayName("Optional<DTO> should extract DTO type from generics")
     void optionalDto_shouldExtractGenericType() throws Exception {
         Method method = getMethod("queryOptionalDto");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryOptionalDto"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryOptionalDto"));
         assertEquals(UserDTO.class, result);
     }
 
@@ -231,7 +231,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
         BoosterQuery bq = getAnnotation("queryRawList");
 
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,
-                () -> invokeResolveElementType(method, bq));
+                () -> invokeResolveResultType(method, bq));
         assertInstanceOf(IllegalStateException.class, ex.getCause());
         assertTrue(ex.getCause().getMessage().contains("List"),
                 "exception message should contain container type name");
@@ -244,7 +244,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
         BoosterQuery bq = getAnnotation("queryRawPage", Pageable.class);
 
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,
-                () -> invokeResolveElementType(method, bq));
+                () -> invokeResolveResultType(method, bq));
         assertInstanceOf(IllegalStateException.class, ex.getCause());
         assertTrue(ex.getCause().getMessage().contains("Page"),
                 "exception message should contain container type name");
@@ -257,7 +257,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
         BoosterQuery bq = getAnnotation("queryRawOptional");
 
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,
-                () -> invokeResolveElementType(method, bq));
+                () -> invokeResolveResultType(method, bq));
         assertInstanceOf(IllegalStateException.class, ex.getCause());
         assertTrue(ex.getCause().getMessage().contains("Optional"),
                 "exception message should contain container type name");
@@ -266,18 +266,18 @@ class BoosterSqlRepositoryQueryElementTypeTest {
     // ==================== Primitive Type Tests (regression protection) ====================
 
     @Test
-    @DisplayName("long return: elementType should be Long.class")
+    @DisplayName("long return: resultType should be Long.class")
     void longReturn_shouldReturnLongClass() throws Exception {
         Method method = getMethod("countQuery");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("countQuery"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("countQuery"));
         assertEquals(Long.class, result);
     }
 
     @Test
-    @DisplayName("int return: elementType should be Integer.class")
+    @DisplayName("int return: resultType should be Integer.class")
     void intReturn_shouldReturnIntegerClass() throws Exception {
-        Method method = getMethod("modifyQuery");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("modifyQuery"));
+        Method method = getMethod("queryIntegerScalar");
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryIntegerScalar"));
         assertEquals(Integer.class, result);
     }
 
@@ -287,7 +287,7 @@ class BoosterSqlRepositoryQueryElementTypeTest {
     @DisplayName("Explicit @BoosterQuery(resultType=...) overrides method return type")
     void explicitResultType_shouldOverrideReturnType() throws Exception {
         Method method = getMethod("queryWithExplicitResultType");
-        Class<?> result = invokeResolveElementType(method, getAnnotation("queryWithExplicitResultType"));
+        Class<?> result = invokeResolveResultType(method, getAnnotation("queryWithExplicitResultType"));
         assertEquals(UserDTO.class, result, "annotation resultType should take precedence over method return type");
     }
 }
